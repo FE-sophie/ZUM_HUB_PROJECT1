@@ -24,21 +24,27 @@ const appRender = (type, path) => {
   const $app = document.querySelector('#app');
 
   if (type === 'home') {
+    //초기 홈화면
     $app.innerHTML = Header(state) + Main(state) + Best(state);
+
+    //헤더 네비게이션 이벤트 핸들링
     const $appNavBar = document.querySelector('.navBar');
     $appNavBar.addEventListener('click', ({ target }) => {
       if (!target.matches('li')) return;
       const pathName = target.getAttribute('route');
-      const $main = document.querySelector('.main');
-      historyRouterPush(pathName, $main);
 
+      historyRouterPush(pathName);
+
+      //네비게시연 클릭시 active클래스 추가
       [...$appNavBar.children].forEach(el => el.classList.remove('active'));
       target.classList.add('active');
     });
+
+    //로고 클릭시 이벤트
     const $logo = document.querySelector('.logo');
+    historyRouterPush('/');
 
     $logo.addEventListener('click', e => {
-      window.history.pushState({}, '/', window.location.origin + '/');
       [...$appNavBar.children].forEach((el, i) => {
         if (!i) {
           el.classList.add('active');
@@ -48,14 +54,19 @@ const appRender = (type, path) => {
       });
     });
   } else {
+    //노트 찾기
     const $header = document.querySelector('.header');
+    const $main = document.querySelector('.main');
+    const $sub = document.querySelector('.sub');
+    const $best = document.querySelector('.best');
+
+    //새 렌더링시 기존 html 요소 제거
+    $main && $main.remove();
+    $sub && $sub.remove();
+    $best && $best.remove();
+
+    //페이지에 따른 렌더링 구현
     if (type === 'sub') {
-      const $main = document.querySelector('.main');
-      const $sub = document.querySelector('.sub');
-      const $best = document.querySelector('.best');
-      $main && $main.remove();
-      $sub && $sub.remove();
-      $best && $best.remove();
       $header.insertAdjacentHTML('afterend', SubPage(state, path));
     } else if (type === 'main') {
       $header.insertAdjacentHTML('afterend', Main(state) + Best(state));
@@ -63,6 +74,8 @@ const appRender = (type, path) => {
       $header.insertAdjacentHTML('afterend', Detail);
     }
   }
+
+  //북마크 이벤트 핸들러 등록
   const $bookmark = document.querySelectorAll('.bookmark');
   $bookmark.forEach(el =>
     el.addEventListener('click', async ({ target }) => {
@@ -78,13 +91,14 @@ const appRender = (type, path) => {
   );
 };
 
+//윈도우 로드시 처리할 내용
 window.onload = async () => {
   appRender('home');
-
   subscribe(GET_APP_VIEW, () => appRender('main'));
   subscribe(GET_DETAIL_VIEW, () => appRender('detail'));
 };
 
+//히스토리 함수
 const historyRouterPush = async pathName => {
   window.history.pushState({}, pathName, window.location.origin + pathName);
   const path = pathName.replace('/', '').replace('#', '');
