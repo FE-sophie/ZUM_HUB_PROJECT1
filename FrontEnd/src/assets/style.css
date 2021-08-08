@@ -37,6 +37,7 @@ a {
   display: inline-block;
   margin-left: 20px;
   position: relative;
+  cursor: pointer;
   padding: 12px 0;
 }
 .header .logo > span {
