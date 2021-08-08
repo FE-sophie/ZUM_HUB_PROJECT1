@@ -46,7 +46,6 @@ const appRender = (type, path) => {
 
     //로고 클릭시 이벤트
     const $logo = document.querySelector('.logo');
-    historyRouterPush('/');
 
     $logo.addEventListener('click', e => {
       [...$appNavBar.children].forEach((el, i) => {
@@ -55,6 +54,7 @@ const appRender = (type, path) => {
         } else {
           el.classList.remove('active');
         }
+        historyRouterPush('/');
       });
     });
   } else {
