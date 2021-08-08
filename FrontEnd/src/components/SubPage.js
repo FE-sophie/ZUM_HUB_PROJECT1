@@ -11,10 +11,13 @@ const SubPage = ({ sub }, path) => {
     return `
     <div class="sub">
       <h2 id="subPage" class="subLogo">${title[path]}</h2>
-      <div class="container">
-        <section aria-labelledby="subPage">
+      <div class="container ${!dataList.length && 'textCenter'}">
+        ${
+          dataList.length
+            ? `<section aria-labelledby="subPage">
           <h3 class="a11yHidden">${title[path]} 기사</h3>
           <ul class="clearfix article2Wrapper">
+            
             ${dataList
               .map(({ idx, imageUrl, title, summaryContent, mediaName }) => {
                 return `
@@ -30,8 +33,10 @@ const SubPage = ({ sub }, path) => {
               })
               .join('')}
           </ul>
-        </section>
-      </div>
+        </section>`
+            : '즐겨찾기 목록이 없습니다'
+        }
+        </div>
     </div>
       `;
   };
