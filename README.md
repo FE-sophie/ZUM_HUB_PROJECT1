@@ -2,7 +2,7 @@
 <br>
 <br>
 
-# 👩‍💻 ZUM_HUB_PROJECT1 - 줌 프론트엔드 신입 과제
+# 👩‍💻 ZUM_HUB_PROJECT1 
 
 <br>
 <br>
