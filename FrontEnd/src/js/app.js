@@ -3,19 +3,23 @@ import Main from '../components/Main.js';
 import Header from '../components/Header.js';
 import Detail from '../components/Detail.js';
 import Best from '../components/Best.js';
+import Error from '../components/Error.js';
 
 import {
-  getBestDataApi,
   getMainDataApi,
+  getBestDataApi,
   getDataApi,
   postBookMarkApi,
 } from '../modules/api/dataApi.js';
 import appStore, {
+  GET_LOADING,
   POST_BOOKMARK,
   GET_APP_VIEW,
   GET_SUB_VIEW,
   GET_DETAIL_VIEW,
+  NOT_FOUND,
 } from '../store/appStore.js';
+import Loading from '../components/Loading.js';
 
 const { dispatch, subscribe, getState } = appStore;
 
@@ -59,19 +63,31 @@ const appRender = (type, path) => {
     const $main = document.querySelector('.main');
     const $sub = document.querySelector('.sub');
     const $best = document.querySelector('.best');
+    const $loading = document.querySelector('.loading');
+    const $error = document.querySelector('.error');
 
     //새 렌더링시 기존 html 요소 제거
     $main && $main.remove();
     $sub && $sub.remove();
     $best && $best.remove();
+    $loading && $loading.remove();
+    $error && $Error.remove();
 
     //페이지에 따른 렌더링 구현
+    // if (type === 'loading') {
+    //   $app.innerHTML = Loading(state);
+    // } else if (type === 'error') {
+    //   $header.insertAdjacentHTML('afterend', Error(state));
+    // } else
     if (type === 'sub') {
       $header.insertAdjacentHTML('afterend', SubPage(state, path));
     } else if (type === 'main') {
-      $header.insertAdjacentHTML('afterend', Main(state) + Best(state));
+      $header.insertAdjacentHTML(
+        'afterend',
+        state.loading ? Loading(state) : Main(state) + Best(state),
+      );
     } else {
-      $header.insertAdjacentHTML('afterend', Detail);
+      // $header.insertAdjacentHTML('afterend', Detail(state));
     }
   }
 
@@ -93,9 +109,18 @@ const appRender = (type, path) => {
 
 //윈도우 로드시 처리할 내용
 window.onload = async () => {
+  dispatch({
+    type: GET_APP_VIEW,
+    payload: {
+      main: await getMainDataApi(getState().main),
+      best: await getBestDataApi(),
+    },
+  });
   appRender('home');
   subscribe(GET_APP_VIEW, () => appRender('main'));
   subscribe(GET_DETAIL_VIEW, () => appRender('detail'));
+  subscribe(NOT_FOUND, () => appRender('error'));
+  subscribe(GET_LOADING, () => appRender('loading'));
 };
 
 //히스토리 함수

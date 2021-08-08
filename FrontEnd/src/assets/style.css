@@ -74,9 +74,10 @@ a {
 }
 .header .navBar > li {
   float: left;
-  padding: 16px;
+  padding: 16px 30px;
   color: #646363;
   font-size: 1.6rem;
+  cursor: pointer;
 }
 .header .navBar > li.active {
   position: relative;

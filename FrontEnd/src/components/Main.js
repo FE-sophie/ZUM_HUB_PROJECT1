@@ -1,4 +1,3 @@
-import { getDataApi } from '../modules/api/dataApi.js';
 import Articles from './Articles.js';
 
 const Main = ({ main }) => {

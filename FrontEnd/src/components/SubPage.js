@@ -34,7 +34,7 @@ const SubPage = ({ sub }, path) => {
               .join('')}
           </ul>
         </section>`
-            : '즐겨찾기 목록이 없습니다'
+            : '즐겨찾기목록이 없습니다'
         }
         </div>
     </div>
