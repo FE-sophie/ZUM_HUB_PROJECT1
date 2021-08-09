@@ -45,9 +45,7 @@ app.get('/api/content/:category', (req, res) => {
 
 //페이지 라우팅
 app.get('/:page', (req, res) => {
-  res.sendFile(path.join(app.get('front'), '/public/index.html'));
   const page = req.params.page;
-  console.log('page');
   res.send(data[page]);
 });
 app.get('/', (req, res) => {
