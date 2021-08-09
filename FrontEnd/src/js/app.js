@@ -4,6 +4,7 @@ import Header from '../components/Header.js';
 import Detail from '../components/Detail.js';
 import Best from '../components/Best.js';
 import Error from '../components/Error.js';
+import Loading from '../components/Loading.js';
 
 import {
   getMainDataApi,
@@ -12,6 +13,7 @@ import {
   postBookMarkApi,
 } from '../modules/api/dataApi.js';
 import appStore, {
+  FINISH_LOADING,
   GET_LOADING,
   POST_BOOKMARK,
   GET_APP_VIEW,
@@ -19,7 +21,6 @@ import appStore, {
   GET_DETAIL_VIEW,
   NOT_FOUND,
 } from '../store/appStore.js';
-import Loading from '../components/Loading.js';
 
 const { dispatch, subscribe, getState } = appStore;
 
@@ -30,36 +31,37 @@ const appRender = (type, path) => {
   //app 요소 찾기
   const $app = document.querySelector('#app');
 
-  //app에 header 추가
-  $app.innerHTML = Header(state, path);
-
   const $header = document.querySelector('.header');
-
   const $main = document.querySelector('.main');
   const $sub = document.querySelector('.sub');
   const $best = document.querySelector('.best');
-  const $loading = document.querySelector('.loading');
   const $error = document.querySelector('.error');
+  const $loading = document.querySelector('.loading');
 
   $main && $main.remove();
   $sub && $sub.remove();
   $best && $best.remove();
-  $loading && $loading.remove();
   $error && $Error.remove();
 
-  if (type === 'home') {
-    //초기 홈화면
-    $app.insertAdjacentHTML('beforeend', Main(state) + Best(state));
-  }
-  //페이지에 따른 렌더링 구현
-  else if (type === 'loading') {
+  if (type === 'loading') {
+    //로딩화면
+    //app에 header 추가
+    $app.innerHTML = Header(state, path);
+    const $header = document.querySelector('.header');
     $header.insertAdjacentHTML('afterend', Loading(state));
-  } else if (type === 'error') {
-    $header.insertAdjacentHTML('afterend', Error(state));
+  } else if (type === 'home') {
+    //초기 홈화면
+    setTimeout(() => {
+      $loading.remove();
+      $header.insertAdjacentHTML('afterend', Main(state) + Best(state));
+    }, 800);
   } else if (type === 'sub') {
-    $header.insertAdjacentHTML('afterend', SubPage(state, path));
+    setTimeout(() => {
+      $loading.remove();
+      $header.insertAdjacentHTML('afterend', SubPage(state, path));
+    }, 800);
   } else {
-    $header.insertAdjacentHTML('afterend', Detail(state));
+    // $header.insertAdjacentHTML('afterend', Detail(state));
   }
 
   //네비게이션 라우트 핸들링 이벤트핸들러
@@ -98,16 +100,14 @@ const appRender = (type, path) => {
     }),
   );
 };
-// subscribe(GET_APP_VIEW, () => appRender('home', hash));
-
-//   subscribe(GET_DETAIL_VIEW, () => appRender('detail', hash));
-//   subscribe(NOT_FOUND, () => appRender('error', hash));
 
 //윈도우 로드시 처리할 내용
 
-window.onload = () => {
+window.onload = e => {
+  //새로고침 발생시 해시 조회후 라우팅 변경(홈으로 이동x)
   const hash = window.location.hash;
   historyRouterPush(hash);
+  // subscribe(GET_LOADING, () => appRender('loading', hash));
 };
 
 window.addEventListener('popstate', () => {
@@ -120,21 +120,43 @@ const historyRouterPush = async pathName => {
   window.history.pushState({}, pathName, window.location.origin + pathName);
   const path = pathName.replace('/', '').replace('#', '');
   if (!path) {
-    let mainData = JSON.parse(localStorage.getItem('main'));
+    //로딩 시작
+    dispatch({ type: GET_LOADING });
+    appRender('loading', path);
+    //로컬스토리지 데이터 조회
+    let mainData = JSON.parse(localStorage.getItem('main')) || {};
+
+    //데이터 받아서 상태 없데이트
     dispatch({
       type: GET_APP_VIEW,
       payload: {
-        main: Object.keys(mainData).length ? mainData : await getMainDataApi(),
+        main: !Object.keys(mainData).length && (await getMainDataApi()),
         best: await getBestDataApi(),
       },
     });
+
+    //로딩 끝
+    dispatch({ type: FINISH_LOADING });
+
+    //렌더링
     appRender('home', path);
   } else {
+    //로딩 시작
+    dispatch({ type: GET_LOADING });
+    appRender('loading', path);
+
+    //로컬스토리지 데이터 조회 없으면 빈배열 넘겨줌(에러방지)
+    //북마크페이지 데이터는 로컬스토리지에서 조회
     let subData = JSON.parse(localStorage.getItem(path)) || [];
+
+    //로컬스토리지 데이터 조회 후 데이터 있으면 요청 방지
     if (path !== 'bookmark') {
-      !subData.length && (await getDataApi(path, 'sub'));
+      subData = !subData.length ? await getDataApi(path, 'sub') : subData;
     }
+    //무한 스크롤 구현을 위한 카운터 조회
     let { count } = getState().sub;
+
+    // 데이터 업데이트 후 상태 업데이트
     dispatch(
       {
         type: GET_SUB_VIEW,
@@ -142,6 +164,11 @@ const historyRouterPush = async pathName => {
       },
       path,
     );
+
+    //로딩 끝
+    dispatch({ type: FINISH_LOADING });
+
+    //렌더링
     appRender('sub', path);
   }
 };
