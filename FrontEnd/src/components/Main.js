@@ -5,8 +5,8 @@ const Main = ({ main }) => {
   //2.푸드
   //3.여행
   //4.컬쳐
-  let mainState = main;
 
+  let mainState = main;
   let sectionName = {
     라이프: 'life',
     푸드: 'food',
@@ -28,6 +28,7 @@ const Main = ({ main }) => {
     </main>
     `;
   };
+
   return render(sectionName);
 };
 export default Main;

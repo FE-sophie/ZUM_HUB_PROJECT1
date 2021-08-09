@@ -1,5 +1,4 @@
 const SubPage = ({ sub }, path) => {
-  console.log(sub);
   const subData = sub[path];
   const subPageRender = (dataList, path) => {
     const title = {
