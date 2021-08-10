@@ -9,15 +9,24 @@ const getHTML = async url => {
   }
 };
 
-getHTML().then(html => {
-  let divList = [];
-  const $ = cheerio.load(html.data);
-  const $bodyList = $('div#content').children('article.entry');
-  $bodyList.each((i, elem) => {
-    titlelist[i] = {
-      title: $(this).find('div.list-row div.list-body a.list'),
-    };
-  });
-});
+getHTML()
+  .then(html => {
+    let divList = [];
+    const $ = cheerio.load(html.data);
+    console.log($);
+    const $bodyList = $.querySelector('div#container .contents').children('div');
+
+    $bodyList.each((i, elem) => {
+      divList[i] = {
+        title: $bodyList.querySelector('h2.main_title').text(),
+        url: $bodyList.querySelector('a#btn_media').attr('href'),
+        category: $bodyList.querySelector('a#btn_category').text(),
+        body: $bodyList.querySelector('article_wrap'),
+        url: $bodyList.querySelector('a#btn_media').attr('href'),
+      };
+    });
+    return divList;
+  })
+  .then(res => res);
 
 export default checkData;
