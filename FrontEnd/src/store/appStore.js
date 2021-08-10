@@ -40,11 +40,11 @@ const mainObj = { life: [], food: [], trip: [], culture: [] };
 const initialState = {
   header: [
     { title: '홈', route: '/' },
-    { title: '라이프', route: '/life' },
-    { title: '푸드', route: '/food' },
-    { title: '여행', route: '/trip' },
-    { title: '컬처', route: '/culture' },
-    { title: '즐겨찾기', route: '/bookmark' },
+    { title: '라이프', route: '#/life' },
+    { title: '푸드', route: '#/food' },
+    { title: '여행', route: '#/trip' },
+    { title: '컬처', route: '#/culture' },
+    { title: '즐겨찾기', route: '#/bookmark' },
   ],
   main: mainObj,
   sub: { life: [], food: [], trip: [], culture: [], bookmark: [], count: 0 },

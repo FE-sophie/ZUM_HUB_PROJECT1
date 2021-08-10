@@ -22,7 +22,6 @@ export const getMainDataApi = async () => {
     mainList.forEach(async sectionName => {
       dataList[sectionName] = await getDataApi(sectionName, 'main');
     });
-    localStorage.setItem('main', JSON.stringify(dataList));
     return dataList;
   } catch (error) {
     console.log(`Error:${error}`);
@@ -50,7 +49,6 @@ export const getBestDataApi = async () => {
   try {
     const res = await request.get('http://localhost:3000/api/best');
     best = await res.json();
-    localStorage.setItem('best', JSON.stringify(best));
     best = best.splice(0, 12);
     return best;
   } catch (error) {

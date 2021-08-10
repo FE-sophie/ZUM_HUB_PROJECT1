@@ -24,7 +24,7 @@ const Header = ({ header }, active) => {
                 ({ title, route }) =>
                   `<li class='history ${
                     title === titleList[active] && 'active'
-                  }' route=#${route}>${title}</li>`,
+                  }' route=${route}>${title}</li>`,
               )
               .join('')}
           </ul>
