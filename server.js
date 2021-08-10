@@ -29,11 +29,11 @@ app.post('/api/bookmark', (req, res) => {
   const { route, id } = req.body;
   if (bookmark.find(el => +id === el.idx)) {
     res.send(bookmark);
-    res.status(400).send({ error: '이미 즐겨찾기 하였습니다!' });
     return;
   }
   let newBookmark = data[route].find(el => +id === el.idx);
   bookmark = [...bookmark, newBookmark];
+
   res.send(bookmark);
 });
 
