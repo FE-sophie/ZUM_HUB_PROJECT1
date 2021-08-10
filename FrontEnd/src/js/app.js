@@ -42,8 +42,9 @@ const appRender = (type, path) => {
   $sub && $sub.remove();
   $best && $best.remove();
   $error && $Error.remove();
-
   if (type === 'loading' || type === 'header') {
+    $loading && $loading.remove();
+
     //app에 header 추가
     $app.innerHTML = Header(state, path);
 
@@ -123,6 +124,11 @@ window.onload = e => {
   const hash = window.location.hash;
   historyRouterPush(hash);
 };
+window.addEventListener('popstate', () => {
+  //새로고침 발생시 해시 조회후 라우팅 변경(홈으로 이동x)
+  const hash = window.location.hash;
+  historyRouterPush(hash);
+});
 
 //URL 변경 감지 함수
 const historyRouterPush = async pathName => {
