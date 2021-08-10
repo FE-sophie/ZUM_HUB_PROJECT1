@@ -18,7 +18,12 @@ const reducer = (state, { type, payload }) => {
     case FINISH_LOADING:
       return { ...state, loading: false, error: false };
     case POST_BOOKMARK:
-      return { ...state, sub: { ...state.sub, bookmark: payload }, error: false };
+      let bookmark = JSON.parse(localStorage.getItem('bookmark'));
+      return {
+        ...state,
+        sub: { ...state.sub, bookmark },
+        error: false,
+      };
     case GET_APP_VIEW:
       const { main, best } = payload;
       return { ...state, main, best, error: false };
@@ -26,7 +31,7 @@ const reducer = (state, { type, payload }) => {
       const { path, data, count } = payload;
       return {
         ...state,
-        sub: { ...state.sub, [path]: [...state.sub[path], ...data], count },
+        sub: { ...state.sub, [path]: data, count },
         error: false,
       };
     case GET_DETAIL_VIEW:

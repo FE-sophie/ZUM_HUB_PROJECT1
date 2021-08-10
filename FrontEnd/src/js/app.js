@@ -98,6 +98,23 @@ const appRender = (type, path) => {
       }, 800);
     }
   }
+  if (type === 'home' || type === 'sub') {
+    //북마크 이벤트 핸들러 등록
+    const $bookmark = document.querySelectorAll('.bookmark');
+    $bookmark.forEach(el =>
+      el.addEventListener('click', async ({ target }) => {
+        let id = '';
+        if (!target.matches('.bookmark')) {
+          id = target.parentNode.parentNode.id;
+        } else {
+          id = target.parentNode.id;
+        }
+        const res = await postBookMarkApi(id.split('ID'));
+        console.log('요청결과', res);
+        dispatch({ type: POST_BOOKMARK, payload: res });
+      }),
+    );
+  }
   if (type === 'detail') {
     // $header.insertAdjacentHTML('afterend', Detail(state));
   }
@@ -113,6 +130,7 @@ const appRender = (type, path) => {
         id = target.parentNode.id;
       }
       const res = await postBookMarkApi(id.split('ID'));
+      console.log('요청결과', res);
       dispatch({ type: POST_BOOKMARK, payload: res });
     }),
   );

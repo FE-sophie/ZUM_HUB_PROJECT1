@@ -57,10 +57,12 @@ export const getBestDataApi = async () => {
   }
 };
 export const postBookMarkApi = async ([route, id]) => {
+  console.log('북마크 추가요청');
   let bookmark = [];
   try {
     const res = await request.post('http://localhost:3000/api/bookmark', { route, id });
     bookmark = await res.json();
+
     localStorage.setItem('bookmark', JSON.stringify(bookmark));
     return bookmark;
   } catch (error) {
