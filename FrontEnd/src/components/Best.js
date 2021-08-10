@@ -6,14 +6,13 @@ const Best = ({ best }) => {
                 <ul class="clearfix">
                     ${dataList
                       .map(({ idx, mediaName, title, url }, i) => {
-                        return `<li class="articleItem">
+                        url = url.replace('https://hub.zum.com/', '');
+                        return `<li class="articleItem" route=${url}>
                                     <span>${i + 1}</span>
                                     <article id="${idx}"class="bestArticle">
-                                            <a href="${url}">
                                                 <h4 class="a11yHidden">랭킹${i + 1}위 기사</h4>
                                                 <p>${title}</p>
                                                 <span>by ${mediaName}</span>
-                                            </a>
                                     </article>
                                 </li>
                                 `;
