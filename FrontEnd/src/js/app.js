@@ -5,11 +5,19 @@ import Detail from '../components/Detail.js';
 import Best from '../components/Best.js';
 import Error from '../components/Error.js';
 import Loading from '../components/Loading.js';
-import appStore, { POST_BOOKMARK } from '../store/appStore.js';
+import appStore, {
+  POST_BOOKMARK,
+  GET_LOADING,
+  GET_HEADER,
+  GET_DETAIL_VIEW,
+  GET_SUB_VIEW,
+  GET_APP_VIEW,
+  FINISH_LOADING,
+} from '../store/appStore.js';
 import { postBookMarkApi } from '../modules/api/dataApi.js';
 const { dispatch, subscribe, getState } = appStore;
 import { historyRouterPush } from './main.js';
-const appRender = (type, path) => {
+const appRender = () => {
   //상태 불러오기
   let state = getState();
 
@@ -28,57 +36,56 @@ const appRender = (type, path) => {
   $best && $best.remove();
   $error && $Error.remove();
 
-  if (type === 'loading' || type === 'header') {
+  if (state.page === 'loading' || state.page === 'header') {
     //app에 header 추가
-    $app.innerHTML = Header(state, path);
-
+    $app.innerHTML = Header(state);
     $loading && $loading.remove();
     //로딩 페이지 렌더링
-    if (type === 'loading') {
+    if (state.page === 'loading') {
       const $header = document.querySelector('.header');
       $header.insertAdjacentHTML('afterend', Loading(state));
     }
-    //로고 클릭 및 네비게이션 버튼 클릭시 URL 변경 이벤트 핸들러 등록
-    navigationHandler();
-  }
-  //메인 페이지 서브페이지 렌더링
-  if (type === 'home' || type === 'sub') {
-    // $sub && $sub.remove();
-    if (!$loading) {
-      type === 'home' && $header.insertAdjacentHTML('afterend', Main(state) + Best(state));
-      type === 'sub' && $header.insertAdjacentHTML('afterend', SubPage(state, path));
-    } else {
-      //메인
-      type === 'home' &&
-        setTimeout(() => {
-          $loading.remove();
-          $header.insertAdjacentHTML('afterend', Main(state) + Best(state));
-          articleEventHandler();
-        }, 800);
-      //서브
-      type === 'sub' &&
-        setTimeout(() => {
-          $loading.remove();
-          $header.insertAdjacentHTML('afterend', SubPage(state, path));
-          articleEventHandler();
-        }, 800);
+  } else {
+    //메인 페이지 서브페이지 렌더링
+    if (state.page === 'home' || state.page === 'sub') {
+      // $sub && $sub.remove();
+      if (!$loading) {
+        state.page === 'home' && $header.insertAdjacentHTML('afterend', Main(state) + Best(state));
+        state.page === 'sub' && $header.insertAdjacentHTML('afterend', SubPage(state));
+      } else {
+        //메인
+        state.page === 'home' &&
+          setTimeout(() => {
+            $loading.remove();
+            $header.insertAdjacentHTML('afterend', Main(state) + Best(state));
+          }, 800);
+        //서브
+        state.page === 'sub' &&
+          setTimeout(() => {
+            $loading.remove();
+            $header.insertAdjacentHTML('afterend', SubPage(state));
+          }, 800);
+      }
     }
+    //디테일
+    if (state.page === 'detail') {
+      setTimeout(() => {
+        $loading && $loading.remove();
+        $header.insertAdjacentHTML('afterend', Detail(state));
+      }, 800);
+    }
+    navigationHandler();
+    articleEventHandler();
   }
-
-  if (type === 'detail') {
-    $header.insertAdjacentHTML('afterend', Detail(state));
-  }
-
-  //카드 클릭시 이벤트 핸들러
-  articleEventHandler();
 };
 
-//윈도우 로드시 처리할 내용
-window.onload = e => {
-  //새로고침 발생시 해시 조회후 라우팅 변경(홈으로 이동x)
+window.addEventListener('DOMContentLoaded', () => {
   const hash = window.location.hash;
+  subscribe(GET_LOADING, () => appRender());
+  subscribe(GET_HEADER, () => appRender());
+  subscribe(FINISH_LOADING, () => appRender());
   historyRouterPush(hash);
-};
+});
 window.addEventListener('popstate', () => {
   //새로고침 발생시 해시 조회후 라우팅 변경(홈으로 이동x)
   const hash = window.location.hash;
@@ -97,15 +104,8 @@ const navigationHandler = () => {
 
   //로고 클릭시 홈으로 이동 이벤트 핸들러 등록
   const $logo = document.querySelector('.logo');
-  $logo.addEventListener('click', e => {
-    [...$appNavBar.children].forEach((el, i) => {
-      if (!i) {
-        el.classList.add('active');
-      } else {
-        el.classList.remove('active');
-      }
-      historyRouterPush('/');
-    });
+  $logo.addEventListener('click', () => {
+    historyRouterPush('/');
   });
 };
 
@@ -117,7 +117,7 @@ const articleEventHandler = () => {
       if (!target.matches('.bookmark>*')) {
         let pathName = target.parentNode.parentNode.getAttribute('route').split('/');
         pathName = pathName ? pathName : target.parentNode.getAttribute('route').split('/');
-        historyRouterPush(`#/detail/${pathName[1]}/${pathName[2]}`, pathName[0]);
+        historyRouterPush(`#/detail/${pathName[0]}/${pathName[1]}/${pathName[2]}`);
       }
 
       //북마크 이벤트 핸들러 등록

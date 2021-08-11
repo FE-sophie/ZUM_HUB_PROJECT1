@@ -1,4 +1,4 @@
-const Header = ({ header }, active) => {
+const Header = ({ header, path }) => {
   const navList = [...header];
   const titleList = {
     home: '홈',
@@ -8,7 +8,7 @@ const Header = ({ header }, active) => {
     culture: '컬처',
     bookmark: '즐겨찾기',
   };
-  active = active ? active : 'home';
+  path = path ? path : 'home';
   const render = navList => {
     return `<header class="header">
         <div class="logoWrapper">
@@ -23,7 +23,7 @@ const Header = ({ header }, active) => {
               .map(
                 ({ title, route }) =>
                   `<li class='history ${
-                    title === titleList[active] && 'active'
+                    title === titleList[path] && 'active'
                   }' route=${route}>${title}</li>`,
               )
               .join('')}

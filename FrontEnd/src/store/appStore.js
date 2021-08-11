@@ -8,34 +8,49 @@ export const GET_DETAIL_VIEW = 'GET_DETAIL_VIEW';
 export const GET_LOADING = 'GET_LOADING';
 export const FINISH_LOADING = 'FINISH_LOADING';
 export const NOT_FOUND = 'NOT_FOUND';
+export const GET_HEADER = 'GET_HEADER';
 
 const reducer = (state, { type, payload }) => {
   switch (type) {
-    case NOT_FOUND:
+    case NOT_FOUND: {
       return { ...state, error: true };
-    case GET_LOADING:
-      return { ...state, loading: true, error: false };
-    case FINISH_LOADING:
-      return { ...state, loading: false, error: false };
-    case POST_BOOKMARK:
+    }
+    case GET_HEADER: {
+      const { path, page } = payload;
+      return { ...state, path, page };
+    }
+    case GET_LOADING: {
+      const { path, page } = payload;
+      return { ...state, loading: true, error: false, path, page, detail: '' };
+    }
+    case FINISH_LOADING: {
+      const { page } = payload;
+      return { ...state, loading: false, error: false, page };
+    }
+    case POST_BOOKMARK: {
       let bookmark = JSON.parse(localStorage.getItem('bookmark'));
       return {
         ...state,
         sub: { ...state.sub, bookmark },
         error: false,
       };
-    case GET_APP_VIEW:
-      const { main, best } = payload;
-      return { ...state, main, best, error: false };
-    case GET_SUB_VIEW:
+    }
+    case GET_APP_VIEW: {
+      const { main, best, path } = payload;
+      return { ...state, main, best, path, error: false };
+    }
+    case GET_SUB_VIEW: {
       const { path, data, count } = payload;
       return {
         ...state,
         sub: { ...state.sub, [path]: data, count },
         error: false,
+        path,
       };
-    case GET_DETAIL_VIEW:
+    }
+    case GET_DETAIL_VIEW: {
       return { ...state, detail: payload, error: false };
+    }
     default:
       return state;
   }
@@ -57,6 +72,8 @@ const initialState = {
   detail: '',
   error: false,
   loading: false,
+  path: '',
+  page: '',
 };
 
 const appStore = Store.createStore(initialState, reducer);

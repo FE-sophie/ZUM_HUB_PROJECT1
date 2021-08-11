@@ -1,5 +1,6 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
+const { contents } = require('cheerio/lib/api/traversing');
 
 const getHTML = async url => {
   try {
@@ -17,7 +18,11 @@ const check = async url => {
     const contentsHtml = html
       .split('<!-- 메인 컨텐츠 -->')[1]
       .split('<!-- 컨텐츠 추가 정보 -->')[0];
-    return contentsHtml;
+
+    while (true) {
+      if (!contentsHtml.includes('data-src')) return contentsHtml;
+      contentsHtml = contentsHtml.replace('data-src', 'src');
+    }
   });
 };
 exports.check = check;

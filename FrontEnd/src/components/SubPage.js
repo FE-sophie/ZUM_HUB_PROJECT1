@@ -1,4 +1,4 @@
-const SubPage = ({ sub }, path) => {
+const SubPage = ({ sub, path }) => {
   const subData = sub[path];
   const subPageRender = (dataList, path) => {
     const title = {

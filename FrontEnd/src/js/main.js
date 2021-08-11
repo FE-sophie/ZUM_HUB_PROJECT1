@@ -13,48 +13,48 @@ import appStore, {
   GET_APP_VIEW,
   GET_SUB_VIEW,
   GET_DETAIL_VIEW,
+  GET_HEADER,
   NOT_FOUND,
 } from '../store/appStore.js';
 
 const { dispatch, subscribe, getState } = appStore;
 
 //URL 변경 감지 함수
-export const historyRouterPush = async (pathName, activeDetail) => {
+export const historyRouterPush = async pathName => {
   window.history.pushState({}, pathName, window.location.origin + pathName);
 
   const path = pathName.replace('/', '').replace('#', '');
-
   //상세페이지
   if (path.includes('detail')) {
-    dispatch({ type: GET_LOADING });
-    appRender('loading', path);
+    //url 배열 => [카테고리,언론사,글번호]
     let url = path.replace('detail/', '').split('/');
+
+    //로딩
+    dispatch({ type: GET_LOADING, payload: { path: url[0], page: 'loading' } });
+
+    //디테일 페이지 데이터 받아서 상태 업데이트
     dispatch({
       type: GET_DETAIL_VIEW,
       payload: await getDetailApi(url),
     });
     //로딩 끝
-    dispatch({ type: FINISH_LOADING });
-    //렌더링
-    appRender('detail', activeDetail);
+    dispatch({ type: FINISH_LOADING, payload: { page: 'detail' } });
   }
   //메인페이지
   if (!path) {
-    //로딩 시작
-    dispatch({ type: GET_LOADING });
-
     //로컬스토리지 데이터 조회
     let mainData = JSON.parse(localStorage.getItem('main')) || {};
     let bestData = JSON.parse(localStorage.getItem('best')) || [];
 
     if (!Object.keys(mainData).length) {
-      appRender('loading', path);
+      //로딩 시작
+      dispatch({ type: GET_LOADING, payload: { path: path, page: 'loading' } });
       mainData = await getMainDataApi();
       bestData = await getBestDataApi();
       localStorage.setItem('main', JSON.stringify(mainData));
       localStorage.setItem('best', JSON.stringify(bestData));
     } else {
-      appRender('header', path);
+      dispatch({ type: GET_HEADER, payload: { path: path, page: 'header' } });
     }
 
     //데이터 받아서 상태 업데이트
@@ -63,31 +63,28 @@ export const historyRouterPush = async (pathName, activeDetail) => {
       payload: {
         main: mainData,
         best: bestData,
+        path: path,
       },
     });
 
     //로딩 끝
-    dispatch({ type: FINISH_LOADING });
-    //렌더링
-    appRender('home', path);
+    dispatch({ type: FINISH_LOADING, payload: { page: 'home' } });
   }
   if (!path.includes('detail') && path) {
     //로컬스토리지 데이터 조회 없으면 빈배열 넘겨줌(에러방지)
     //북마크페이지 데이터는 로컬스토리지에서 조회
     let subData = JSON.parse(localStorage.getItem(path)) || [];
 
-    //로딩 시작
-    dispatch({ type: GET_LOADING });
-
     //로컬스토리지 데이터 조회 후 데이터 있으면 요청 방지
     if (subData.length) {
-      appRender('header', path);
+      dispatch({ type: GET_HEADER, payload: { path: path, page: 'header' } });
     } else {
       if (path !== 'bookmark') {
-        appRender('loading', path);
+        //로딩 시작
+        dispatch({ type: GET_LOADING, payload: { path: path, page: 'loading' } });
         subData = await getDataApi(path, 'sub');
       } else {
-        appRender('header', path);
+        dispatch({ type: GET_HEADER, payload: { path: path, page: 'header' } });
       }
     }
     //무한 스크롤 구현을 위한 카운터 조회
@@ -103,9 +100,6 @@ export const historyRouterPush = async (pathName, activeDetail) => {
     );
 
     //로딩 끝
-    dispatch({ type: FINISH_LOADING });
-
-    //렌더링
-    appRender('sub', path);
+    dispatch({ type: FINISH_LOADING, payload: { page: 'sub' } });
   }
 };
