@@ -9,22 +9,15 @@ const getHTML = async url => {
   }
 };
 
-const check = url => {
-  getHTML(url).then(({ data }) => {
-    const $ = cheerio.load(data, { decodeEntities: true });
-    const title = $('h2.main_title')[0].children[0].data;
-    const category = $('a#btn_category')[0].children[0].data;
-    const media = $('a#btn_media')[0].children[0].data;
-    const contentList = $('div.article_body')[0].children;
-    // console.log(contentList);
-    let htmlData = {
-      title,
-      category,
-      media,
-      contentList,
-    };
-    return htmlData;
+const check = async url => {
+  return getHTML(url).then(({ data }) => {
+    // const $ = cheerio.load(data, { decodeEntities: true });
+    //html 본문 추출
+    const html = cheerio.load(data).html();
+    const contentsHtml = html
+      .split('<!-- 메인 컨텐츠 -->')[1]
+      .split('<!-- 컨텐츠 추가 정보 -->')[0];
+    return contentsHtml;
   });
 };
-
-export default check;
+exports.check = check;

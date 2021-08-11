@@ -66,7 +66,7 @@ const appRender = (type, path) => {
   }
 
   if (type === 'detail') {
-    // $header.insertAdjacentHTML('afterend', Detail(state));
+    $header.insertAdjacentHTML('afterend', Detail(state));
   }
 
   //카드 클릭시 이벤트 핸들러
@@ -115,9 +115,9 @@ const articleEventHandler = () => {
     el.addEventListener('click', async ({ target }) => {
       //상세페이지로 이동 이벤트 핸들러
       if (!target.matches('.bookmark>*')) {
-        let pathName = target.parentNode.parentNode.getAttribute('route');
-        pathName = pathName ? pathName : target.parentNode.getAttribute('route');
-        historyRouterPush(`#/detail/${pathName}`);
+        let pathName = target.parentNode.parentNode.getAttribute('route').split('/');
+        pathName = pathName ? pathName : target.parentNode.getAttribute('route').split('/');
+        historyRouterPush(`#/detail/${pathName[1]}/${pathName[2]}`, pathName[0]);
       }
 
       //북마크 이벤트 핸들러 등록

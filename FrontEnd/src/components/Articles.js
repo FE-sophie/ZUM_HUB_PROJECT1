@@ -6,7 +6,7 @@ const Articles = (sectionTitle, dataList, sectionName) => {
           .map(({ idx, imageUrl, title, summaryContent, mediaName, url }) => {
             url = url.replace('https://hub.zum.com/', '');
             return `
-            <li route='${url}'>
+            <li route='${sectionName}/${url}'>
               <article id="${sectionName}ID${idx}" class="article">
                 <img class="articleImg"src="${imageUrl}" alt="${title}"/>
                 <h3 class="articleTitle">${title}</h3>

@@ -19,7 +19,7 @@ import appStore, {
 const { dispatch, subscribe, getState } = appStore;
 
 //URL 변경 감지 함수
-export const historyRouterPush = async pathName => {
+export const historyRouterPush = async (pathName, activeDetail) => {
   window.history.pushState({}, pathName, window.location.origin + pathName);
 
   const path = pathName.replace('/', '').replace('#', '');
@@ -28,12 +28,15 @@ export const historyRouterPush = async pathName => {
   if (path.includes('detail')) {
     dispatch({ type: GET_LOADING });
     appRender('loading', path);
-    let url = 'https://hub.zum.com/' + path.replace('detail/', '');
-    console.log(url);
+    let url = path.replace('detail/', '').split('/');
     dispatch({
       type: GET_DETAIL_VIEW,
       payload: await getDetailApi(url),
     });
+    //로딩 끝
+    dispatch({ type: FINISH_LOADING });
+    //렌더링
+    appRender('detail', activeDetail);
   }
   //메인페이지
   if (!path) {

@@ -1,14 +1,8 @@
 const express = require('express');
 const path = require('path');
+const { stringify } = require('querystring');
+const { check } = require('./checkDetail.js');
 const app = express();
-// import check from 'checkDetail.js';
-// const cors = require('cors');
-
-app.set('port', process.env.PORT || 3000);
-app.set('front', process.env.FRONT || path.join(__dirname, './FrontEnd'));
-
-app.use('/', express.static(path.join(app.get('front'), '/')));
-
 let { food, life, rank, culture, trip, bookmark, best } = require('./data.js');
 const data = {
   food,
@@ -19,13 +13,20 @@ const data = {
   best,
   bookmark,
 };
+
+app.set('port', process.env.PORT || 3000);
+app.set('front', process.env.FRONT || path.join(__dirname, './FrontEnd'));
+
+app.use('/', express.static(path.join(app.get('front'), '/')));
+
 app.use(express.json());
-// app.use(cors());
 
 //디테일페이지 데이터 송신
-app.get('/api/detail/:url', (req, res) => {
+app.get('/api/detail/:url', async (req, res) => {
   const url = req.params.url;
-  check(url).then(data => res.send(data));
+  const [media, idx] = url.split('&');
+  let data = JSON.stringify(await check(`https://hub.zum.com/${media}/${idx}`));
+  res.send(data);
 });
 
 //랭킹 데이터 송신
@@ -43,7 +44,6 @@ app.post('/api/bookmark', (req, res) => {
   }
   let newBookmark = data[route].find(el => +id === el.idx);
   bookmark = [...bookmark, newBookmark];
-
   res.send(bookmark);
 });
 

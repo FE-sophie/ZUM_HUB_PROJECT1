@@ -1,6 +1,7 @@
 const Detail = ({ detail }) => {
-  // const { category = '', type = '', imgList = '', textList = '', media } = detail;
-  // return;
+  return `
+   ${detail}
+   `;
 };
 
 export default Detail;

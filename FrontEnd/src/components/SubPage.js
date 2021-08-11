@@ -22,7 +22,7 @@ const SubPage = ({ sub }, path) => {
                     .map(({ idx, imageUrl, title, summaryContent, mediaName, url }) => {
                       url = url.replace('https://hub.zum.com/', '');
                       return `
-                    <li class="article2" route="${url}">
+                    <li class="article2" route="${path}/${url}">
                       <article class="article" id="${path}ID${idx}">
                         <img class="articleImg"src="${imageUrl}" alt="${title}"/>
                         <h3 class="articleTitle">${title}</h3>
