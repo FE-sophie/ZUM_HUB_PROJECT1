@@ -7,7 +7,7 @@ const Best = ({ best }) => {
                     ${dataList
                       .map(({ idx, mediaName, title, url }, i) => {
                         url = url.replace('https://hub.zum.com/', '');
-                        return `<li class="articleItem" route=${url}>
+                        return `<li class="articleItem" route='${url}'>
                                     <span>${i + 1}</span>
                                     <article id="${idx}"class="bestArticle">
                                                 <h4 class="a11yHidden">랭킹${i + 1}위 기사</h4>

@@ -57,7 +57,6 @@ export const getBestDataApi = async () => {
   }
 };
 export const postBookMarkApi = async ([route, id]) => {
-  console.log('북마크 추가요청');
   let bookmark = [];
   try {
     const res = await request.post('http://localhost:3000/api/bookmark', { route, id });
@@ -73,7 +72,7 @@ export const postBookMarkApi = async ([route, id]) => {
 export const getDetailApi = async url => {
   let detail = {};
   try {
-    const res = await request.get(url);
+    const res = await request.get(`http://localhost:3000/api/detail/${url}`);
     detail = await res.json();
   } catch (error) {
     console.log(error);

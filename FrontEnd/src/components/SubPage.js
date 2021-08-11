@@ -15,19 +15,24 @@ const SubPage = ({ sub }, path) => {
       <div class="container ${!dataList && 'textCenter'}">
         <section aria-labelledby="subPage">
           <h3 class="a11yHidden">${title[path]} 기사</h3>
-          <ul class="clearfix article2Wrapper">
+          <ul class="clearfix articleWrapper article2Wrapper">
             ${
               dataList
                 ? dataList
-                    .map(({ idx, imageUrl, title, summaryContent, mediaName }) => {
+                    .map(({ idx, imageUrl, title, summaryContent, mediaName, url }) => {
+                      url = url.replace('https://hub.zum.com/', '');
                       return `
-                    <li class="article2">
+                    <li class="article2" route="${url}">
                       <article class="article" id="${path}ID${idx}">
                         <img class="articleImg"src="${imageUrl}" alt="${title}"/>
                         <h3 class="articleTitle">${title}</h3>
                         <p>${summaryContent}</p>
                         <span>by${mediaName}</span>
-                        <span class="bookmark">★<span>즐겨찾기추가</span></span>
+                        <span class="bookmark">
+                          <span>★</span>
+                          <span class="bookmarkText">즐겨찾기추가</span>
+                          </span>
+
                       </article>
                     </li>`;
                     })

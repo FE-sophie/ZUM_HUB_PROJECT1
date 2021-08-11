@@ -169,16 +169,17 @@ a {
   background: rgba(0, 0, 0, 0.3);
   position: absolute;
 }
-.article:hover .articleImg {
+.articleWrapper .article > *:hover {
   cursor: pointer;
 }
+
 .article:hover .articleTitle,
 .article .articleTitle {
+  font-weight: 600;
   padding-top: 5px;
   line-height: 1.25;
   overflow: hidden;
   color: #333;
-  cursor: pointer;
   display: -webkit-box;
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
@@ -225,8 +226,9 @@ a {
   cursor: pointer;
   color: rgb(55, 50, 68);
 }
-.article span.bookmark span {
+.article .bookmarkText {
   vertical-align: middle;
+  padding: 5px;
 }
 
 .best {

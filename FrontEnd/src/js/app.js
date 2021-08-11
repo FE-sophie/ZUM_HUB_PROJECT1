@@ -27,98 +27,50 @@ const appRender = (type, path) => {
   $sub && $sub.remove();
   $best && $best.remove();
   $error && $Error.remove();
-  if (type === 'loading' || type === 'header') {
-    $loading && $loading.remove();
 
+  if (type === 'loading' || type === 'header') {
     //app에 header 추가
     $app.innerHTML = Header(state, path);
 
+    $loading && $loading.remove();
     //로딩 페이지 렌더링
     if (type === 'loading') {
       const $header = document.querySelector('.header');
       $header.insertAdjacentHTML('afterend', Loading(state));
     }
-
-    //네비게이션 버튼 클릭시 URL 변경 이벤트 핸들러 등록
-    const $appNavBar = document.querySelector('.navBar');
-
-    $appNavBar.addEventListener('click', ({ target }) => {
-      if (!target.matches('li')) return;
-      const pathName = target.getAttribute('route');
-      historyRouterPush(pathName);
-    });
-
-    //로고 클릭시 홈으로 이동 이벤트 핸들러 등록
-    const $logo = document.querySelector('.logo');
-
-    $logo.addEventListener('click', e => {
-      [...$appNavBar.children].forEach((el, i) => {
-        if (!i) {
-          el.classList.add('active');
-        } else {
-          el.classList.remove('active');
-        }
-        historyRouterPush('/');
-      });
-    });
+    //로고 클릭 및 네비게이션 버튼 클릭시 URL 변경 이벤트 핸들러 등록
+    navigationHandler();
   }
-  if (type === 'home') {
-    //초기 홈화면
-    if (!$loading) {
-      $header.insertAdjacentHTML('afterend', Main(state) + Best(state));
-    } else {
-      setTimeout(() => {
-        $loading.remove();
-        $header.insertAdjacentHTML('afterend', Main(state) + Best(state));
-      }, 800);
-    }
-  }
-  if (type === 'sub') {
-    if (!$loading) {
-      $header.insertAdjacentHTML('afterend', SubPage(state, path));
-    } else {
-      setTimeout(() => {
-        $loading.remove();
-        $header.insertAdjacentHTML('afterend', SubPage(state, path));
-      }, 800);
-    }
-  }
+  //메인 페이지 서브페이지 렌더링
   if (type === 'home' || type === 'sub') {
-    //북마크 이벤트 핸들러 등록
-    const $bookmark = document.querySelectorAll('.bookmark');
-    $bookmark.forEach(el =>
-      el.addEventListener('click', async ({ target }) => {
-        let id = '';
-        if (!target.matches('.bookmark')) {
-          id = target.parentNode.parentNode.id;
-        } else {
-          id = target.parentNode.id;
-        }
-        const res = await postBookMarkApi(id.split('ID'));
-        console.log('요청결과', res);
-        dispatch({ type: POST_BOOKMARK, payload: res });
-      }),
-    );
+    // $sub && $sub.remove();
+    if (!$loading) {
+      type === 'home' && $header.insertAdjacentHTML('afterend', Main(state) + Best(state));
+      type === 'sub' && $header.insertAdjacentHTML('afterend', SubPage(state, path));
+    } else {
+      //메인
+      type === 'home' &&
+        setTimeout(() => {
+          $loading.remove();
+          $header.insertAdjacentHTML('afterend', Main(state) + Best(state));
+          articleEventHandler();
+        }, 800);
+      //서브
+      type === 'sub' &&
+        setTimeout(() => {
+          $loading.remove();
+          $header.insertAdjacentHTML('afterend', SubPage(state, path));
+          articleEventHandler();
+        }, 800);
+    }
   }
+
   if (type === 'detail') {
     // $header.insertAdjacentHTML('afterend', Detail(state));
   }
 
-  //북마크 이벤트 핸들러 등록
-  const $bookmark = document.querySelectorAll('.bookmark');
-  $bookmark.forEach(el =>
-    el.addEventListener('click', async ({ target }) => {
-      let id = '';
-      if (!target.matches('.bookmark')) {
-        id = target.parentNode.parentNode.id;
-      } else {
-        id = target.parentNode.id;
-      }
-      const res = await postBookMarkApi(id.split('ID'));
-      console.log('요청결과', res);
-      dispatch({ type: POST_BOOKMARK, payload: res });
-    }),
-  );
+  //카드 클릭시 이벤트 핸들러
+  articleEventHandler();
 };
 
 //윈도우 로드시 처리할 내용
@@ -132,5 +84,50 @@ window.addEventListener('popstate', () => {
   const hash = window.location.hash;
   historyRouterPush(hash);
 });
+
+//이벤트 핸들러
+const navigationHandler = () => {
+  //네비게이션 메뉴 클릭시 url 변경
+  const $appNavBar = document.querySelector('.navBar');
+  $appNavBar.addEventListener('click', ({ target }) => {
+    if (!target.matches('li')) return;
+    const pathName = target.getAttribute('route');
+    historyRouterPush(pathName);
+  });
+
+  //로고 클릭시 홈으로 이동 이벤트 핸들러 등록
+  const $logo = document.querySelector('.logo');
+  $logo.addEventListener('click', e => {
+    [...$appNavBar.children].forEach((el, i) => {
+      if (!i) {
+        el.classList.add('active');
+      } else {
+        el.classList.remove('active');
+      }
+      historyRouterPush('/');
+    });
+  });
+};
+
+const articleEventHandler = () => {
+  const $article = document.querySelectorAll('.articleWrapper');
+  [...$article].forEach(el => {
+    el.addEventListener('click', async ({ target }) => {
+      //상세페이지로 이동 이벤트 핸들러
+      if (!target.matches('.bookmark>*')) {
+        let pathName = target.parentNode.parentNode.getAttribute('route');
+        pathName = pathName ? pathName : target.parentNode.getAttribute('route');
+        historyRouterPush(`#/detail/${pathName}`);
+      }
+
+      //북마크 이벤트 핸들러 등록
+      if (target.matches('.bookmark>*')) {
+        const id = target.parentNode.parentNode.id;
+        const res = await postBookMarkApi(id.split('ID'));
+        dispatch({ type: POST_BOOKMARK, payload: res });
+      }
+    });
+  });
+};
 
 export default appRender;

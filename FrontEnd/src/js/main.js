@@ -1,6 +1,11 @@
 import appRender from './app.js';
 
-import { getMainDataApi, getBestDataApi, getDataApi } from '../modules/api/dataApi.js';
+import {
+  getMainDataApi,
+  getBestDataApi,
+  getDataApi,
+  getDetailApi,
+} from '../modules/api/dataApi.js';
 
 import appStore, {
   FINISH_LOADING,
@@ -18,13 +23,27 @@ export const historyRouterPush = async pathName => {
   window.history.pushState({}, pathName, window.location.origin + pathName);
 
   const path = pathName.replace('/', '').replace('#', '');
+
+  //상세페이지
+  if (path.includes('detail')) {
+    dispatch({ type: GET_LOADING });
+    appRender('loading', path);
+    let url = 'https://hub.zum.com/' + path.replace('detail/', '');
+    console.log(url);
+    dispatch({
+      type: GET_DETAIL_VIEW,
+      payload: await getDetailApi(url),
+    });
+  }
+  //메인페이지
   if (!path) {
     //로딩 시작
     dispatch({ type: GET_LOADING });
-    //로컬스토리지 데이터 조회
 
+    //로컬스토리지 데이터 조회
     let mainData = JSON.parse(localStorage.getItem('main')) || {};
     let bestData = JSON.parse(localStorage.getItem('best')) || [];
+
     if (!Object.keys(mainData).length) {
       appRender('loading', path);
       mainData = await getMainDataApi();
@@ -34,7 +53,8 @@ export const historyRouterPush = async pathName => {
     } else {
       appRender('header', path);
     }
-    //데이터 받아서 상태 없데이트
+
+    //데이터 받아서 상태 업데이트
     dispatch({
       type: GET_APP_VIEW,
       payload: {
@@ -45,10 +65,10 @@ export const historyRouterPush = async pathName => {
 
     //로딩 끝
     dispatch({ type: FINISH_LOADING });
-
     //렌더링
     appRender('home', path);
-  } else {
+  }
+  if (!path.includes('detail') && path) {
     //로컬스토리지 데이터 조회 없으면 빈배열 넘겨줌(에러방지)
     //북마크페이지 데이터는 로컬스토리지에서 조회
     let subData = JSON.parse(localStorage.getItem(path)) || [];
