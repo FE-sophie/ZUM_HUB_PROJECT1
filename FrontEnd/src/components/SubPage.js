@@ -23,7 +23,7 @@ const SubPage = ({ sub, path }) => {
                       url = url.replace('https://hub.zum.com/', '');
                       return `
                     <li class="articleItem2" route="${path}/${url}">
-                      <article class="articleCard id="${path}ID${idx}">
+                      <article class="articleCard" id="${path}ID${idx}">
                         <img class="articleImg"src="${imageUrl}" alt="${title}"/>
                         <h3 class="articleTitle">${title}</h3>
                         <p>${summaryContent}</p>

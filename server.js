@@ -29,12 +29,6 @@ app.get('/api/detail/:url', async (req, res) => {
   res.send(data);
 });
 
-//랭킹 데이터 송신
-app.get('/api/best', (req, res) => {
-  const best = data['best'];
-  res.send(best);
-});
-
 //북마크 추가 요청
 app.post('/api/bookmark', (req, res) => {
   const { route, id } = req.body;
@@ -45,6 +39,12 @@ app.post('/api/bookmark', (req, res) => {
   let newBookmark = data[route].find(el => +id === el.idx);
   bookmark = [...bookmark, newBookmark];
   res.send(bookmark);
+});
+
+//랭킹 데이터 송신
+app.get('/api/best', (req, res) => {
+  const best = data['best'];
+  res.send(best);
 });
 
 //서브페이지 데이터 송신

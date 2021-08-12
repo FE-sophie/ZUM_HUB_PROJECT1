@@ -81,14 +81,12 @@ const appRender = () => {
     $app.innerHTML = Header(state) + Loading(state);
     headerEvent();
     const $loading = document.querySelector('.loading');
-    if ($loading) {
-      setTimeout(() => {
-        $loading.remove();
-        $app.innerHTML = Header(state) + SubPage(state);
-        headerEvent();
-        articleEvent();
-      }, 800);
-    }
+    setTimeout(() => {
+      $loading.remove();
+      $app.innerHTML = Header(state) + SubPage(state);
+      headerEvent();
+      articleEvent();
+    }, 800);
   }
   if (state.page === 'detail') {
     const $loading = document.querySelector('.loading');
@@ -146,7 +144,7 @@ const infinityScrollHandler = () => {
   const hash = window.location.hash;
   const path = hash.replace('#/', '');
   //서브페이지에서만 인피니트 스크롤 구현
-  let route = ['life', 'culture', 'trip', 'food', 'bookmark'];
+  let route = ['life', 'culture', 'trip', 'food'];
   if (!route.includes(path)) return;
   if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
     let { count } = getState().sub;
@@ -247,14 +245,15 @@ const navigationHandler = ({ target }) => {
 const articleEventHandler = async ({ target }) => {
   //상세페이지로 이동
   if (!target.matches('.bookmark>*')) {
+    console.log(1, target);
     let pathName = target.parentNode.parentNode.getAttribute('route');
     pathName = pathName ? pathName.split('/') : target.parentNode.getAttribute('route').split('/');
     historyRouterPush(`#/detail/${pathName[0]}/${pathName[1]}/${pathName[2]}`);
   }
-
   //즐겨찾기 버튼 클릭시 post요청
-  if (target.matches('.bookmark>*')) {
+  if (target.matches('.bookmark > *')) {
     const id = target.parentNode.parentNode.id;
+    console.log(id);
     const res = await postBookMarkApi(id.split('ID'));
     dispatch({ type: POST_BOOKMARK, payload: res });
   }
@@ -269,6 +268,7 @@ const bestEventHandler = ({ target }) => {
 
 //즐겨찾기 추가 이벤트 핸들러
 const bookmarkEventHandler = async ({ target }) => {
+  console.log(target);
   if (target.matches('.bookmark>*')) {
     const id = target.parentNode.parentNode.id;
     const res = await postBookMarkApi(id.split('ID'));

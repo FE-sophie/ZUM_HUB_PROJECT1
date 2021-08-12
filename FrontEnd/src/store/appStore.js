@@ -42,15 +42,26 @@ const reducer = (state, { type, payload }) => {
     }
     case GET_SUB_VIEW: {
       const { page, path, count, data } = payload;
-      const subArr = [...state.sub[path], ...data];
-      if (subArr.length > 40) subArr.length = 40;
-      return {
-        ...state,
-        sub: { ...state.sub, [path]: subArr, count },
-        error: false,
-        path,
-        page,
-      };
+
+      if (path !== 'bookmark') {
+        const subArr = [...state.sub[path], ...data];
+        if (subArr.length > 40) subArr.length = 40;
+        return {
+          ...state,
+          sub: { ...state.sub, [path]: subArr, count },
+          error: false,
+          path,
+          page,
+        };
+      } else {
+        return {
+          ...state,
+          sub: { ...state.sub, count },
+          error: false,
+          path,
+          page,
+        };
+      }
     }
     case GET_DETAIL_VIEW: {
       const { data, page } = payload;
