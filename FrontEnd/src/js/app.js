@@ -250,6 +250,7 @@ const articleEventHandler = async ({ target }) => {
     const id = target.parentNode.parentNode.id;
     const res = await postBookMarkApi(id.split('ID'));
     dispatch({ type: POST_BOOKMARK, payload: res });
+    alert('즐겨찾기에 추가하였습니다.');
   }
 };
 
@@ -267,6 +268,7 @@ const bookmarkEventHandler = async ({ target }) => {
     const id = target.parentNode.parentNode.id;
     const res = await postBookMarkApi(id.split('ID'));
     dispatch({ type: POST_BOOKMARK, payload: res });
+    alert('즐겨찾기에 추가하였습니다.');
   }
 };
 
@@ -278,6 +280,7 @@ const pushMain = () => {
 const pushCategory = ({ target }) => {
   const pathName = target.getAttribute('route');
   historyRouterPush(`#/${pathName}`);
+  window.scrollTo(0, 0);
 };
 
 export default appRender;

@@ -53,7 +53,7 @@ export const getBestDataApi = async () => {
     best = best.splice(0, 12);
     return best;
   } catch (error) {
-    console.log(error);
+    console.log(`Error:${error}`);
     dispatch({ type: NOT_FOUND });
   }
 };
@@ -63,11 +63,9 @@ export const postBookMarkApi = async ([route, id]) => {
     const res = await request.post('http://localhost:3000/api/bookmark', { route, id });
     bookmark = await res.json();
     localStorage.setItem('bookmark', JSON.stringify(bookmark));
-
-    console.log('북마크추가요', bookmark);
     return bookmark;
   } catch (error) {
-    console.log(error);
+    console.log(`Error:${error}`);
     dispatch({ type: NOT_FOUND });
   }
 };
@@ -83,7 +81,7 @@ export const getDetailApi = async url => {
     htmlData = { path, data: { htmlData: contentsHtml, idx: url[2] } };
     return htmlData;
   } catch (error) {
-    console.log(error);
+    console.log(`Error:${error}`);
     dispatch({ type: NOT_FOUND });
   }
 };

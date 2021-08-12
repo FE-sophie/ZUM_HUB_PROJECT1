@@ -68,8 +68,6 @@ export const historyRouterPush = async pathName => {
         //로딩 시작
         dispatch({ type: GET_LOADING, payload: { path: path, page: 'loading' } });
         subData = await getDataApi(path, 'sub');
-      } else {
-        console.log('제이슨', subData);
       }
     }
 
