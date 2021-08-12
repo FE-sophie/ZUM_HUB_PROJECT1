@@ -17,65 +17,60 @@ import appStore, {
 import { postBookMarkApi } from '../modules/api/dataApi.js';
 const { dispatch, subscribe, getState } = appStore;
 import { historyRouterPush } from './main.js';
+
+//렌더링 함수
 const appRender = () => {
   //상태 불러오기
   let state = getState();
-
-  //app 요소 찾기
+  //뷰 조회
+  let view = state.page;
   const $app = document.querySelector('#app');
 
-  const $header = document.querySelector('.header');
-  const $main = document.querySelector('.main');
-  const $sub = document.querySelector('.sub');
-  const $best = document.querySelector('.best');
-  const $error = document.querySelector('.error');
-  const $loading = document.querySelector('.loading');
+  if (view === 'loading') {
+    $app.innerHTML = Header(state) + Loading(state);
+    headerEvent();
+  }
 
-  $main && $main.remove();
-  $sub && $sub.remove();
-  $best && $best.remove();
-  $error && $Error.remove();
-
-  if (state.page === 'loading' || state.page === 'header') {
-    //app에 header 추가
-    $app.innerHTML = Header(state);
-    $loading && $loading.remove();
-    //로딩 페이지 렌더링
-    if (state.page === 'loading') {
-      const $header = document.querySelector('.header');
-      $header.insertAdjacentHTML('afterend', Loading(state));
-    }
-  } else {
-    //메인 페이지 서브페이지 렌더링
-    if (state.page === 'home' || state.page === 'sub') {
-      // $sub && $sub.remove();
-      if (!$loading) {
-        state.page === 'home' && $header.insertAdjacentHTML('afterend', Main(state) + Best(state));
-        state.page === 'sub' && $header.insertAdjacentHTML('afterend', SubPage(state));
-      } else {
-        //메인
-        state.page === 'home' &&
-          setTimeout(() => {
-            $loading.remove();
-            $header.insertAdjacentHTML('afterend', Main(state) + Best(state));
-          }, 800);
-        //서브
-        state.page === 'sub' &&
-          setTimeout(() => {
-            $loading.remove();
-            $header.insertAdjacentHTML('afterend', SubPage(state));
-          }, 800);
-      }
-    }
-    //디테일
-    if (state.page === 'detail') {
+  if (view === 'home') {
+    const $loading = document.querySelector('.loading');
+    if ($loading) {
       setTimeout(() => {
-        $loading && $loading.remove();
-        $header.insertAdjacentHTML('afterend', Detail(state));
+        $loading.remove();
+        $app.innerHTML = Header(state) + Main(state) + Best(state);
+        headerEvent();
+        articleEvent();
+        bestEvent();
       }, 800);
+    } else {
+      $app.innerHTML = Header(state) + Main(state) + Best(state);
+      headerEvent();
+      articleEvent();
+      bestEvent();
     }
-    navigationHandler();
-    articleEventHandler();
+  }
+  if (view === 'sub') {
+    const $loading = document.querySelector('.loading');
+    if ($loading) {
+      setTimeout(() => {
+        $loading.remove();
+        $app.innerHTML = Header(state) + SubPage(state);
+        headerEvent();
+        articleEvent();
+      }, 800);
+    } else {
+      $app.innerHTML = Header(state) + SubPage(state);
+      headerEvent();
+      articleEvent();
+    }
+  }
+  if (state.page === 'detail') {
+    const $loading = document.querySelector('.loading');
+    setTimeout(() => {
+      $loading && $loading.remove();
+      $app.innerHTML = Header(state) + Detail(state);
+      headerEvent();
+      detailEvent();
+    }, 800);
   }
 };
 
@@ -84,50 +79,138 @@ window.addEventListener('DOMContentLoaded', () => {
   subscribe(GET_LOADING, () => appRender());
   subscribe(GET_HEADER, () => appRender());
   subscribe(FINISH_LOADING, () => appRender());
+  removeArticleEvent();
+  removeBestEvent();
+  removeDetailEvent();
+  removeHeaderEvent();
   historyRouterPush(hash);
 });
+
 window.addEventListener('popstate', () => {
   //새로고침 발생시 해시 조회후 라우팅 변경(홈으로 이동x)
   const hash = window.location.hash;
   historyRouterPush(hash);
 });
 
-//이벤트 핸들러
-const navigationHandler = () => {
-  //네비게이션 메뉴 클릭시 url 변경
+//네비게이션 이벤트 등록
+const headerEvent = () => {
   const $appNavBar = document.querySelector('.navBar');
-  $appNavBar.addEventListener('click', ({ target }) => {
-    if (!target.matches('li')) return;
-    const pathName = target.getAttribute('route');
-    historyRouterPush(pathName);
-  });
-
-  //로고 클릭시 홈으로 이동 이벤트 핸들러 등록
   const $logo = document.querySelector('.logo');
-  $logo.addEventListener('click', () => {
-    historyRouterPush('/');
+
+  //네비게이션 클릭시 카테고리 이동
+  $appNavBar.addEventListener('click', navigationHandler);
+  //로고 클릭시 홈으로 이동
+  $logo.addEventListener('click', pushMain);
+};
+
+//카드뉴스 클릭 이벤트 핸들러 등록
+const articleEvent = () => {
+  const $article = document.querySelectorAll('.articleList');
+  [...$article].forEach(el => {
+    el.addEventListener('click', articleEventHandler);
   });
 };
 
-const articleEventHandler = () => {
-  const $article = document.querySelectorAll('.articleWrapper');
-  [...$article].forEach(el => {
-    el.addEventListener('click', async ({ target }) => {
-      //상세페이지로 이동 이벤트 핸들러
-      if (!target.matches('.bookmark>*')) {
-        let pathName = target.parentNode.parentNode.getAttribute('route').split('/');
-        pathName = pathName ? pathName : target.parentNode.getAttribute('route').split('/');
-        historyRouterPush(`#/detail/${pathName[0]}/${pathName[1]}/${pathName[2]}`);
-      }
+//랭킹 상위 12 이벤트 핸들러 등록
+const bestEvent = () => {
+  const $bestItem = document.querySelector('.bestList');
+  $bestItem.addEventListener('click', bestEventHandler);
+};
 
-      //북마크 이벤트 핸들러 등록
-      if (target.matches('.bookmark>*')) {
-        const id = target.parentNode.parentNode.id;
-        const res = await postBookMarkApi(id.split('ID'));
-        dispatch({ type: POST_BOOKMARK, payload: res });
-      }
+//디테일 이벤트 핸들러 등록
+const detailEvent = () => {
+  const $detailBookmark = document.querySelector('.detailBookmark');
+  const $pushCategory = document.querySelector('.pushCategory');
+
+  //즐겨찾기 버튼 클릭시 즐겨찾기 추가 요청
+  $detailBookmark.addEventListener('click', bookmarkEventHandler);
+  //목록 버튼 클릭시 카테고리로 이동
+  $pushCategory.addEventListener('click', pushCategory);
+};
+
+//네비게이션 이벤트 등록 해제
+const removeHeaderEvent = () => {
+  const $appNavBar = document.querySelector('.navBar');
+  const $logo = document.querySelector('.logo');
+
+  $appNavBar && $appNavBar.removeEventListener('click', navigationHandler);
+  $logo && $logo.removeEventListener('click', pushMain);
+};
+
+//카드뉴스 클릭 이벤트 핸들러 등록 해제
+const removeArticleEvent = () => {
+  const $article = document.querySelectorAll('.articleList');
+  $article &&
+    [...$article].forEach(el => {
+      el.removeEventListener('click', articleEventHandler);
     });
-  });
+};
+
+//랭킹 상위 12 이벤트 핸들러 등록 해제
+const removeBestEvent = () => {
+  const $bestItem = document.querySelector('.bestList');
+  $bestItem && $bestItem.removeEventListener('click', bestEventHandler);
+};
+
+//디테일 이벤트 핸들러 해제
+const removeDetailEvent = () => {
+  const $detailBookmark = document.querySelector('.detailBookmark');
+  const $pushCategory = document.querySelector('.pushCategory');
+
+  $detailBookmark && $detailBookmark.removeEventListener('click', bookmarkEventHandler);
+  $pushCategory && $pushCategory.removeEventListener('click', pushCategory);
+};
+
+//네비게이션 이벤트 핸들러
+const navigationHandler = ({ target }) => {
+  if (!target.matches('li')) return;
+  const pathName = target.getAttribute('route');
+
+  //네비게이션 메뉴 클릭시 url 변경
+  historyRouterPush(pathName);
+};
+
+//카드뉴스 이벤트 핸들러
+const articleEventHandler = async ({ target }) => {
+  //상세페이지로 이동
+  if (!target.matches('.bookmark>*')) {
+    let pathName = target.parentNode.parentNode.getAttribute('route');
+    pathName = pathName ? pathName.split('/') : target.parentNode.getAttribute('route').split('/');
+    historyRouterPush(`#/detail/${pathName[0]}/${pathName[1]}/${pathName[2]}`);
+  }
+
+  //즐겨찾기 버튼 클릭시 post요청
+  if (target.matches('.bookmark>*')) {
+    const id = target.parentNode.parentNode.id;
+    const res = await postBookMarkApi(id.split('ID'));
+    dispatch({ type: POST_BOOKMARK, payload: res });
+  }
+};
+
+// 베스트 이벤트 핸들러
+const bestEventHandler = ({ target }) => {
+  if (!target.matches('.bestArticle>*')) return;
+  const pathName = target.parentNode.parentNode.getAttribute('route');
+  historyRouterPush(`#detail/best/${pathName}`);
+};
+
+//즐겨찾기 추가 이벤트 핸들러
+const bookmarkEventHandler = async ({ target }) => {
+  if (target.matches('.bookmark>*')) {
+    const id = target.parentNode.parentNode.id;
+    const res = await postBookMarkApi(id.split('ID'));
+    dispatch({ type: POST_BOOKMARK, payload: res });
+  }
+};
+
+//메인으로 이동 이벤트 핸들러
+const pushMain = () => {
+  historyRouterPush('/');
+};
+//카테고리 이동 이벤트 핸들러
+const pushCategory = ({ target }) => {
+  const pathName = target.getAttribute('route');
+  historyRouterPush(`#/${pathName}`);
 };
 
 export default appRender;

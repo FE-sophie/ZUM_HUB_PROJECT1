@@ -53,10 +53,7 @@ export const historyRouterPush = async pathName => {
       bestData = await getBestDataApi();
       localStorage.setItem('main', JSON.stringify(mainData));
       localStorage.setItem('best', JSON.stringify(bestData));
-    } else {
-      dispatch({ type: GET_HEADER, payload: { path: path, page: 'header' } });
     }
-
     //데이터 받아서 상태 업데이트
     dispatch({
       type: GET_APP_VIEW,
@@ -75,16 +72,12 @@ export const historyRouterPush = async pathName => {
     //북마크페이지 데이터는 로컬스토리지에서 조회
     let subData = JSON.parse(localStorage.getItem(path)) || [];
 
-    //로컬스토리지 데이터 조회 후 데이터 있으면 요청 방지
-    if (subData.length) {
-      dispatch({ type: GET_HEADER, payload: { path: path, page: 'header' } });
-    } else {
+    //로컬스토리지 데이터 조회 후 데이터 없으면 요청
+    if (!subData.length) {
       if (path !== 'bookmark') {
         //로딩 시작
         dispatch({ type: GET_LOADING, payload: { path: path, page: 'loading' } });
         subData = await getDataApi(path, 'sub');
-      } else {
-        dispatch({ type: GET_HEADER, payload: { path: path, page: 'header' } });
       }
     }
     //무한 스크롤 구현을 위한 카운터 조회

@@ -49,7 +49,8 @@ const reducer = (state, { type, payload }) => {
       };
     }
     case GET_DETAIL_VIEW: {
-      return { ...state, detail: payload, error: false };
+      const { path, data } = payload;
+      return { ...state, path, detail: data, error: false };
     }
     default:
       return state;

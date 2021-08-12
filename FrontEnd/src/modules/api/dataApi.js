@@ -70,11 +70,15 @@ export const postBookMarkApi = async ([route, id]) => {
   }
 };
 export const getDetailApi = async url => {
-  let htmlData = '';
+  let htmlData = {};
   try {
     const res = await request.get(`http://localhost:3000/api/detail/${url[1]}&${url[2]}`);
-    htmlData = await res.json();
-    return htmlData.replace('data-src', 'src');
+    let { contentsHtml, path } = await res.json();
+    while (true) {
+      if (!contentsHtml.includes('data-src')) break;
+      contentsHtml = contentsHtml.replace('data-src', 'src');
+    }
+    return { path, data: { data: contentsHtml, idx: url[2] } };
   } catch (error) {
     console.log(error);
     dispatch({ type: NOT_FOUND });

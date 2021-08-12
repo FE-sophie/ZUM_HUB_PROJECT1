@@ -149,7 +149,7 @@ a {
   margin-bottom: 20px;
   border-bottom: 1px solid #ddd;
 }
-.article {
+.articleCard {
   width: 33%;
   box-sizing: border-box;
   float: left;
@@ -157,26 +157,26 @@ a {
   padding: 10px 20px;
   position: relative;
 }
-.article .articleImg {
+.articleCard .articleImg {
   position: relative;
   display: inline-block;
   width: 100%;
   height: 100%;
 }
 
-.article .articleImg::after {
+.articleCard .articleImg::after {
   content: '';
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.3);
   position: absolute;
 }
-.articleWrapper .article > *:hover {
+.articleList .articleCard > *:hover {
   cursor: pointer;
 }
 
-.articleWrapper .article:hover .articleTitle,
-.articleWrapper .article .articleTitle {
+.articleList .articleCard:hover .articleTitle,
+.articleList .articleCard .articleTitle {
   font-weight: 600;
   padding-top: 5px;
   line-height: 1.25;
@@ -186,18 +186,18 @@ a {
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
 }
-.article:hover .articleTitle {
+.articleCard:hover .articleTitle {
   color: #1d5d9c;
 }
-.article span {
+.articleCard span {
   font-size: 1.2rem;
 }
-.article:hover p,
-.article:hover .articleTitle,
-.article:hover .articleImg {
+.articleCard:hover p,
+.articleCard:hover .articleTitle,
+.articleCard:hover .articleImg {
   cursor: pointer;
 }
-.articleWrapper .article p {
+.articleList .articleCard p {
   padding-top: 20px;
   font-size: 1.2rem;
   width: 100%;
@@ -214,13 +214,13 @@ a {
   white-space: pre-wrap;
   text-overflow: ellipsis; */
 }
-.article:hover p,
-.article:hover .articleTitle,
-.article:hover .articleImg {
+.articleCard:hover p,
+.articleCard:hover .articleTitle,
+.articleCard:hover .articleImg {
   cursor: pointer;
 }
-.article span.bookmark {
-  font-size: 1.6rem;
+.articleCard span.bookmark {
+  font-size: 1.4rem;
   padding: 5px 10px;
   position: absolute;
   bottom: 5px;
@@ -228,16 +228,17 @@ a {
   cursor: pointer;
   color: rgb(55, 50, 68);
 }
-.article .bookmarkText {
+.articleCard .bookmarkText {
   vertical-align: middle;
   padding: 5px;
+  font-size: 1.4rem;
 }
 
 .best {
 }
 .best .wrapper {
 }
-.best .articleItem {
+.best .bestItem {
   width: 24%;
   padding: 10px;
   height: 100px;
@@ -245,9 +246,10 @@ a {
   box-sizing: border-box;
   float: left;
   background-color: #f5f5f5;
+  cursor: pointer;
 }
 
-.best .articleItem > span {
+.best .bestItem > span {
   width: 10%;
   font-size: 2rem;
   vertical-align: middle;
@@ -256,11 +258,11 @@ a {
   text-align: center;
 }
 
-.best .articleItem:hover {
+.best .bestItem:hover {
   background-color: #1d5d9c;
 }
-.best .articleItem:hover p,
-.best .articleItem:hover span {
+.best .bestItem:hover p,
+.best .bestItem:hover span {
   color: #eee;
 }
 .best .bestArticle {
@@ -278,7 +280,7 @@ a {
   font-size: 1.5rem;
   margin: 5px 0;
 }
-.article2 .article {
+.articleItem2 .articleCard {
   width: 25%;
 }
 .subLogo {
@@ -294,22 +296,32 @@ a {
   font-size: 3rem;
   text-align: center;
 }
-
-.article_header {
+.detailArticle {
+  width: 100%;
+}
+.articleWrapper {
+  width: 1170px;
+  margin: 0 auto;
+}
+.articleWrapper .article_header {
   width: 100%;
   height: 100%;
-  padding: 50px 0;
+  padding: 50px 30px;
+  font-size: 1.4rem;
   background-color: #78a0c7;
+  box-sizing: border-box;
+
   color: #fff;
 }
 #btn_category {
   color: #fff;
 }
-.article_title {
-  width: 1170px;
-  margin: 0 auto;
+.article_header span.icon {
+  font-style: italic;
 }
-.article_title a {
+.article_title a#btn_media {
+  margin: 0 5px;
+  font-size: 1.2rem;
   color: #fff;
 }
 .article_title_wrap {
@@ -327,31 +339,60 @@ a {
 .share_list {
   display: none;
 }
+
 .article_wrap {
-  width: 1170px;
+  /* width: 100%; */
+  padding: 40px;
+  box-sizing: border-box;
+  width: 800px;
   margin: 0 auto;
 }
-.article_wrap .article {
-  width: 100%;
-  line-height: normal;
-  padding: 100px 200px;
-  margin: 20px;
+
+.article_wrap .img_block {
+  margin: 50px auto;
+  text-align: center;
 }
-.d_article .article_photo {
-  width: 700px;
-  height: 100%;
+.article_wrap .img_cap {
+  text-align: left;
+}
+.article_body {
+  font-size: 1.6rem;
+  line-height: 2.5rem;
+}
+.article_body img {
+  margin: 20px 0;
+}
+.d_article > p:last-child {
+  text-align: right;
+}
+.d_article:last-child .d_article strong {
+  width: 100%;
+  text-align: center;
   display: block;
-  background-color: #000;
+}
+.iconWrapper {
+  width: 100%;
+  height: 100%;
+  text-align: right;
+  margin-top: 35px;
+}
+.articleWrapper .pushCategory,
+.articleWrapper .bookmark {
+  text-align: right;
+  padding: 8px 12px;
+  color: #7cb3eb;
+  border: 1px solid #7cb3eb;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.3rem;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.article .img_block {
+.articleWrapper .pushCategory {
+  background-color: #7cb3eb;
+  border: none;
+  color: #fff;
   width: 100%;
-  text-align: center;
-}
-.article_wrap img {
-  display: inline-block;
-}
-.d_article strong {
-  text-align: center;
-  display: block;
+  height: 100%;
+  margin-right: 10px;
 }
