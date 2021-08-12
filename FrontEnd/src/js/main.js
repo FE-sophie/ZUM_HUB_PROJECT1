@@ -1,5 +1,3 @@
-import appRender from './app.js';
-
 import {
   getMainDataApi,
   getBestDataApi,
@@ -8,12 +6,10 @@ import {
 } from '../modules/api/dataApi.js';
 
 import appStore, {
-  FINISH_LOADING,
   GET_LOADING,
   GET_APP_VIEW,
   GET_SUB_VIEW,
   GET_DETAIL_VIEW,
-  NOT_FOUND,
 } from '../store/appStore.js';
 
 const { dispatch, subscribe, getState } = appStore;
@@ -34,10 +30,8 @@ export const historyRouterPush = async pathName => {
     //디테일 페이지 데이터 받아서 상태 업데이트
     dispatch({
       type: GET_DETAIL_VIEW,
-      payload: await getDetailApi(url),
+      payload: { data: await getDetailApi(url), page: 'detail' },
     });
-    //로딩 끝
-    dispatch({ type: FINISH_LOADING, payload: { page: 'detail' } });
   }
   //메인페이지
   if (!path) {
@@ -60,11 +54,9 @@ export const historyRouterPush = async pathName => {
         main: mainData,
         best: bestData,
         path: path,
+        page: 'home',
       },
     });
-
-    //로딩 끝
-    dispatch({ type: FINISH_LOADING, payload: { page: 'home' } });
   }
   if (!path.includes('detail') && path) {
     //로컬스토리지 데이터 조회 없으면 빈배열 넘겨줌(에러방지)
@@ -79,19 +71,18 @@ export const historyRouterPush = async pathName => {
         subData = await getDataApi(path, 'sub');
       }
     }
-    //무한 스크롤 구현을 위한 카운터 조회
-    let { count } = getState().sub;
-
     // 데이터 업데이트 후 상태 업데이트
     dispatch(
       {
         type: GET_SUB_VIEW,
-        payload: { path, data: subData.splice(count * 12, 12) || [], count: 0 },
+        payload: {
+          page: 'sub',
+          path: path,
+          data: subData.splice(0, 12) || [],
+          count: 0,
+        },
       },
       path,
     );
-
-    //로딩 끝
-    dispatch({ type: FINISH_LOADING, payload: { page: 'sub' } });
   }
 };

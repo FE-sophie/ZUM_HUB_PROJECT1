@@ -1,56 +1,67 @@
 // import { getBestDataApi, getMainDataApi } from '../modules/api/dataApi.js';
 import Store from './Store.js';
 
-export const POST_BOOKMARK = 'ADD_BOOKMARK';
+export const GET_LOADING = 'GET_LOADING';
 export const GET_APP_VIEW = 'GET_APP_VIEW';
 export const GET_SUB_VIEW = 'GET_SUB_VIEW';
 export const GET_DETAIL_VIEW = 'GET_DETAIL_VIEW';
-export const GET_LOADING = 'GET_LOADING';
-export const FINISH_LOADING = 'FINISH_LOADING';
+export const POST_BOOKMARK = 'ADD_BOOKMARK';
 export const NOT_FOUND = 'NOT_FOUND';
-export const GET_HEADER = 'GET_HEADER';
 
 const reducer = (state, { type, payload }) => {
   switch (type) {
     case NOT_FOUND: {
       return { ...state, error: true };
     }
-    case GET_HEADER: {
-      const { path, page } = payload;
-      return { ...state, path, page };
-    }
     case GET_LOADING: {
-      const { path, page } = payload;
-      return { ...state, loading: true, error: false, path, page, detail: '' };
-    }
-    case FINISH_LOADING: {
-      const { page } = payload;
-      return { ...state, loading: false, error: false, page };
+      const { path, page, count } = payload;
+      return {
+        ...state,
+        sub: {
+          ...state.sub,
+          count: count,
+        },
+        loading: true,
+        error: false,
+        path,
+        page,
+        detail: '',
+      };
     }
     case POST_BOOKMARK: {
       let bookmark = JSON.parse(localStorage.getItem('bookmark'));
       return {
         ...state,
-        sub: { ...state.sub, bookmark },
+        sub: { ...state.sub, bookmark, count: 0 },
         error: false,
       };
     }
     case GET_APP_VIEW: {
-      const { main, best, path } = payload;
-      return { ...state, main, best, path, error: false };
+      const { main, best, path, page } = payload;
+      return { ...state, page, main, best, path, error: false, sub: { ...state.sub, count: 0 } };
     }
     case GET_SUB_VIEW: {
-      const { path, data, count } = payload;
+      const { page, path, count, data } = payload;
+      const subArr = [...state.sub[path], ...data];
+      if (subArr.length > 40) subArr.length = 40;
       return {
         ...state,
-        sub: { ...state.sub, [path]: data, count },
+        sub: { ...state.sub, [path]: subArr, count },
         error: false,
         path,
+        page,
       };
     }
     case GET_DETAIL_VIEW: {
-      const { path, data } = payload;
-      return { ...state, path, detail: data, error: false };
+      const { data, page } = payload;
+      return {
+        ...state,
+        sub: { ...state.sub, count: 0 },
+        page,
+        path: data.path,
+        detail: data.data,
+        error: false,
+      };
     }
     default:
       return state;

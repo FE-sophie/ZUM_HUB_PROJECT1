@@ -1,9 +1,9 @@
 const Detail = ({ path, detail }) => {
-  const { data, idx } = detail;
+  const { htmlData, idx } = detail;
   return `
   <section class="detailArticle">
     <div class="detailArticleWrapper articleWrapper" >
-      <div>${data}</div>  
+      <div>${htmlData}</div>  
       <div class="iconWrapper" id="${path}ID${idx}">
         <span class="pushCategory" route="${path}">목록</span>
         <span class="detailBookmark bookmark">

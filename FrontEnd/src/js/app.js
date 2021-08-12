@@ -8,9 +8,10 @@ import Loading from '../components/Loading.js';
 import appStore, {
   POST_BOOKMARK,
   GET_LOADING,
-  GET_HEADER,
-  FINISH_LOADING,
   NOT_FOUND,
+  GET_SUB_VIEW,
+  GET_DETAIL_VIEW,
+  GET_APP_VIEW,
 } from '../store/appStore.js';
 import { postBookMarkApi } from '../modules/api/dataApi.js';
 const { dispatch, subscribe, getState } = appStore;
@@ -23,7 +24,6 @@ const appRender = () => {
   let state = getState();
   //뷰 조회
   let path = state.path;
-  console.log(path);
   let route = ['life', 'culture', 'trip', 'food', '#', '/'];
 
   let view = state.page;
@@ -77,6 +77,19 @@ const appRender = () => {
       articleEvent();
     }
   }
+  if (view === 'infinity') {
+    $app.innerHTML = Header(state) + Loading(state);
+    headerEvent();
+    const $loading = document.querySelector('.loading');
+    if ($loading) {
+      setTimeout(() => {
+        $loading.remove();
+        $app.innerHTML = Header(state) + SubPage(state);
+        headerEvent();
+        articleEvent();
+      }, 800);
+    }
+  }
   if (state.page === 'detail') {
     const $loading = document.querySelector('.loading');
     setTimeout(() => {
@@ -91,9 +104,11 @@ const appRender = () => {
 window.addEventListener('DOMContentLoaded', () => {
   const hash = window.location.hash;
   subscribe(GET_LOADING, () => appRender());
-  subscribe(GET_HEADER, () => appRender());
-  subscribe(FINISH_LOADING, () => appRender());
+  subscribe(GET_APP_VIEW, () => appRender());
+  subscribe(GET_SUB_VIEW, () => appRender());
+  subscribe(GET_DETAIL_VIEW, () => appRender());
   subscribe(NOT_FOUND, () => appRender());
+
   removeArticleEvent();
   removeBestEvent();
   removeDetailEvent();
@@ -103,9 +118,52 @@ window.addEventListener('DOMContentLoaded', () => {
 
 window.addEventListener('popstate', () => {
   //새로고침 발생시 해시 조회후 라우팅 변경(홈으로 이동x)
+  removeArticleEvent();
+  removeBestEvent();
+  removeDetailEvent();
+  removeHeaderEvent();
   const hash = window.location.hash;
   historyRouterPush(hash);
 });
+
+const throttle = (callBack, delay) => {
+  let timerId;
+  return e => {
+    if (timerId) return;
+    timerId = setTimeout(
+      () => {
+        callBack(e);
+        timerId = null;
+      },
+      delay,
+      e,
+    );
+  };
+};
+
+//무한스크롤 이벤트 핸들러
+const infinityScrollHandler = () => {
+  const hash = window.location.hash;
+  const path = hash.replace('#/', '');
+  //서브페이지에서만 인피니트 스크롤 구현
+  let route = ['life', 'culture', 'trip', 'food', 'bookmark'];
+  if (!route.includes(path)) return;
+  if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+    let { count } = getState().sub;
+    let subData = JSON.parse(localStorage.getItem(path)) || [];
+    dispatch({
+      type: GET_SUB_VIEW,
+      payload: {
+        page: 'infinity',
+        path: path,
+        data: subData.splice((count + 1) * 12, 12) || [],
+        count: count + 1,
+      },
+    });
+  }
+};
+//무한 스크롤 이벤트 핸들러 등록
+window.addEventListener('scroll', throttle(infinityScrollHandler, 1000));
 
 //네비게이션 이벤트 등록
 const headerEvent = () => {

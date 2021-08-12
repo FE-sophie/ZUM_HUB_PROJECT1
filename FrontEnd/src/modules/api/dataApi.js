@@ -79,7 +79,7 @@ export const getDetailApi = async url => {
       if (!contentsHtml.includes('data-src')) break;
       contentsHtml = contentsHtml.replace('data-src', 'src');
     }
-    htmlData = { path, data: { data: contentsHtml, idx: url[2] } };
+    htmlData = { path, data: { htmlData: contentsHtml, idx: url[2] } };
     return htmlData;
   } catch (error) {
     console.log(error);
