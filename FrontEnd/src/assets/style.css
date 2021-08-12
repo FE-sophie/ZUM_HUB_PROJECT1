@@ -342,7 +342,6 @@ a {
 
 .articleWrapper .article_wrap {
   /* width: 100%; */
-  padding: 40px;
   box-sizing: border-box;
   width: 800px;
   margin: 0 auto;
@@ -358,7 +357,7 @@ a {
   line-height: 2.5rem;
 }
 .article_body img {
-  margin: 20px 0;
+  max-width: 800px;
 }
 
 .iconWrapper {
