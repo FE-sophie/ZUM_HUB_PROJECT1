@@ -9,10 +9,8 @@ import appStore, {
   POST_BOOKMARK,
   GET_LOADING,
   GET_HEADER,
-  GET_DETAIL_VIEW,
-  GET_SUB_VIEW,
-  GET_APP_VIEW,
   FINISH_LOADING,
+  NOT_FOUND,
 } from '../store/appStore.js';
 import { postBookMarkApi } from '../modules/api/dataApi.js';
 const { dispatch, subscribe, getState } = appStore;
@@ -21,11 +19,27 @@ import { historyRouterPush } from './main.js';
 //렌더링 함수
 const appRender = () => {
   //상태 불러오기
+
   let state = getState();
   //뷰 조회
+  let path = state.path;
+  console.log(path);
+  let route = ['life', 'culture', 'trip', 'food', '#', '/'];
+
   let view = state.page;
+
   const $app = document.querySelector('#app');
 
+  if (!route.includes(path) || state.page === 'error') {
+    const $loading = document.querySelector('.loading');
+    if ($loading) {
+      setTimeout(() => {
+        $loading.remove();
+        $app.innerHTML = Header(state) + Error(state);
+        headerEvent();
+      }, 800);
+    }
+  }
   if (view === 'loading') {
     $app.innerHTML = Header(state) + Loading(state);
     headerEvent();
@@ -79,6 +93,7 @@ window.addEventListener('DOMContentLoaded', () => {
   subscribe(GET_LOADING, () => appRender());
   subscribe(GET_HEADER, () => appRender());
   subscribe(FINISH_LOADING, () => appRender());
+  subscribe(NOT_FOUND, () => appRender());
   removeArticleEvent();
   removeBestEvent();
   removeDetailEvent();

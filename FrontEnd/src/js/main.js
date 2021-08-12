@@ -13,7 +13,6 @@ import appStore, {
   GET_APP_VIEW,
   GET_SUB_VIEW,
   GET_DETAIL_VIEW,
-  GET_HEADER,
   NOT_FOUND,
 } from '../store/appStore.js';
 

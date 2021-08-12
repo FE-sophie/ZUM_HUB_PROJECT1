@@ -1,5 +1,5 @@
 import appStore, { NOT_FOUND } from '../../store/appStore.js';
-const { dispatch, getState } = appStore;
+const { dispatch } = appStore;
 
 const request = {
   get(url) {
@@ -40,6 +40,7 @@ export const getDataApi = async (pathName, pageType) => {
     return data;
   } catch (error) {
     console.log(`Error: ${error}`);
+    dispatch({ type: NOT_FOUND });
   }
 };
 
@@ -78,7 +79,8 @@ export const getDetailApi = async url => {
       if (!contentsHtml.includes('data-src')) break;
       contentsHtml = contentsHtml.replace('data-src', 'src');
     }
-    return { path, data: { data: contentsHtml, idx: url[2] } };
+    htmlData = { path, data: { data: contentsHtml, idx: url[2] } };
+    return htmlData;
   } catch (error) {
     console.log(error);
     dispatch({ type: NOT_FOUND });
