@@ -62,8 +62,9 @@ export const postBookMarkApi = async ([route, id]) => {
   try {
     const res = await request.post('http://localhost:3000/api/bookmark', { route, id });
     bookmark = await res.json();
-
     localStorage.setItem('bookmark', JSON.stringify(bookmark));
+
+    console.log('북마크추가요', bookmark);
     return bookmark;
   } catch (error) {
     console.log(error);

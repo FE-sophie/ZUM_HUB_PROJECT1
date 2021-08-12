@@ -107,19 +107,15 @@ window.addEventListener('DOMContentLoaded', () => {
   subscribe(GET_DETAIL_VIEW, () => appRender());
   subscribe(NOT_FOUND, () => appRender());
 
-  removeArticleEvent();
-  removeBestEvent();
-  removeDetailEvent();
-  removeHeaderEvent();
+  // removeArticleEvent();
+  // removeBestEvent();
+  // removeDetailEvent();
+  // removeHeaderEvent();
   historyRouterPush(hash);
 });
 
 window.addEventListener('popstate', () => {
   //새로고침 발생시 해시 조회후 라우팅 변경(홈으로 이동x)
-  removeArticleEvent();
-  removeBestEvent();
-  removeDetailEvent();
-  removeHeaderEvent();
   const hash = window.location.hash;
   historyRouterPush(hash);
 });
@@ -144,7 +140,7 @@ const infinityScrollHandler = () => {
   const hash = window.location.hash;
   const path = hash.replace('#/', '');
   //서브페이지에서만 인피니트 스크롤 구현
-  let route = ['life', 'culture', 'trip', 'food'];
+  let route = ['life', 'culture', 'trip', 'food', 'bookmark'];
   if (!route.includes(path)) return;
   if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
     let { count } = getState().sub;
@@ -245,7 +241,6 @@ const navigationHandler = ({ target }) => {
 const articleEventHandler = async ({ target }) => {
   //상세페이지로 이동
   if (!target.matches('.bookmark>*')) {
-    console.log(1, target);
     let pathName = target.parentNode.parentNode.getAttribute('route');
     pathName = pathName ? pathName.split('/') : target.parentNode.getAttribute('route').split('/');
     historyRouterPush(`#/detail/${pathName[0]}/${pathName[1]}/${pathName[2]}`);
@@ -253,7 +248,6 @@ const articleEventHandler = async ({ target }) => {
   //즐겨찾기 버튼 클릭시 post요청
   if (target.matches('.bookmark > *')) {
     const id = target.parentNode.parentNode.id;
-    console.log(id);
     const res = await postBookMarkApi(id.split('ID'));
     dispatch({ type: POST_BOOKMARK, payload: res });
   }
@@ -261,14 +255,14 @@ const articleEventHandler = async ({ target }) => {
 
 // 베스트 이벤트 핸들러
 const bestEventHandler = ({ target }) => {
-  if (!target.matches('.bestArticle>*')) return;
-  const pathName = target.parentNode.parentNode.getAttribute('route');
+  if (!target.matches('.bestArticle > *') && !target.matches('.bestArticle')) return;
+  const route = target.parentNode.getAttribute('route');
+  const pathName = route ? route : target.parentNode.parentNode.getAttribute('route');
   historyRouterPush(`#detail/best/${pathName}`);
 };
 
 //즐겨찾기 추가 이벤트 핸들러
 const bookmarkEventHandler = async ({ target }) => {
-  console.log(target);
   if (target.matches('.bookmark>*')) {
     const id = target.parentNode.parentNode.id;
     const res = await postBookMarkApi(id.split('ID'));

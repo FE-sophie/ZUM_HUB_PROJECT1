@@ -30,6 +30,7 @@ const reducer = (state, { type, payload }) => {
     }
     case POST_BOOKMARK: {
       let bookmark = JSON.parse(localStorage.getItem('bookmark'));
+      console.log(bookmark);
       return {
         ...state,
         sub: { ...state.sub, bookmark, count: 0 },
@@ -56,7 +57,7 @@ const reducer = (state, { type, payload }) => {
       } else {
         return {
           ...state,
-          sub: { ...state.sub, count },
+          sub: { ...state.sub, [path]: data, count },
           error: false,
           path,
           page,

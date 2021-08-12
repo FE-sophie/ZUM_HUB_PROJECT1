@@ -62,15 +62,17 @@ export const historyRouterPush = async pathName => {
     //로컬스토리지 데이터 조회 없으면 빈배열 넘겨줌(에러방지)
     //북마크페이지 데이터는 로컬스토리지에서 조회
     let subData = JSON.parse(localStorage.getItem(path)) || [];
-
     //로컬스토리지 데이터 조회 후 데이터 없으면 요청
     if (!subData.length) {
       if (path !== 'bookmark') {
         //로딩 시작
         dispatch({ type: GET_LOADING, payload: { path: path, page: 'loading' } });
         subData = await getDataApi(path, 'sub');
+      } else {
+        console.log('제이슨', subData);
       }
     }
+
     // 데이터 업데이트 후 상태 업데이트
     dispatch(
       {
