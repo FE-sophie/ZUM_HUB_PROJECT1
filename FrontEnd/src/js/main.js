@@ -16,8 +16,7 @@ const { dispatch, subscribe, getState } = appStore;
 
 //URL 변경 감지 함수
 export const historyRouterPush = async pathName => {
-  window.history.pushState({}, pathName, window.location.origin + pathName);
-
+  history.pushState({ pathName }, pathName, location.origin + pathName);
   const path = pathName.replace('/', '').replace('#', '');
   //상세페이지
   if (path.includes('detail')) {

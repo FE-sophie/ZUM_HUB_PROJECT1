@@ -24,7 +24,7 @@ const appRender = () => {
   let state = getState();
   //뷰 조회
   let path = state.path;
-  let route = ['life', 'culture', 'trip', 'food', '#', '/'];
+  let route = ['life', 'culture', 'trip', 'food', '#'];
 
   let view = state.page;
 
@@ -107,15 +107,11 @@ window.addEventListener('DOMContentLoaded', () => {
   subscribe(GET_DETAIL_VIEW, () => appRender());
   subscribe(NOT_FOUND, () => appRender());
 
-  // removeArticleEvent();
-  // removeBestEvent();
-  // removeDetailEvent();
-  // removeHeaderEvent();
   historyRouterPush(hash);
 });
 
-window.addEventListener('popstate', () => {
-  //새로고침 발생시 해시 조회후 라우팅 변경(홈으로 이동x)
+window.addEventListener('popstate', e => {
+  //뒤로가기 앞으로가기 라우팅 변경(홈으로 이동x)
   const hash = window.location.hash;
   historyRouterPush(hash);
 });
@@ -231,7 +227,7 @@ const removeDetailEvent = () => {
 //네비게이션 이벤트 핸들러
 const navigationHandler = ({ target }) => {
   if (!target.matches('li')) return;
-  const pathName = target.getAttribute('route');
+  const pathName = target.getAttribute('data-route');
 
   //네비게이션 메뉴 클릭시 url 변경
   historyRouterPush(pathName);
@@ -241,8 +237,10 @@ const navigationHandler = ({ target }) => {
 const articleEventHandler = async ({ target }) => {
   //상세페이지로 이동
   if (!target.matches('.bookmark>*')) {
-    let pathName = target.parentNode.parentNode.getAttribute('route');
-    pathName = pathName ? pathName.split('/') : target.parentNode.getAttribute('route').split('/');
+    let pathName = target.parentNode.parentNode.getAttribute('data-route');
+    pathName = pathName
+      ? pathName.split('/')
+      : target.parentNode.getAttribute('data-route').split('/');
     historyRouterPush(`#/detail/${pathName[0]}/${pathName[1]}/${pathName[2]}`);
   }
   //즐겨찾기 버튼 클릭시 post요청
@@ -257,9 +255,9 @@ const articleEventHandler = async ({ target }) => {
 // 베스트 이벤트 핸들러
 const bestEventHandler = ({ target }) => {
   if (!target.matches('.bestArticle > *') && !target.matches('.bestArticle')) return;
-  const route = target.parentNode.getAttribute('route');
-  const pathName = route ? route : target.parentNode.parentNode.getAttribute('route');
-  historyRouterPush(`#detail/best/${pathName}`);
+  const route = target.parentNode.getAttribute('data-route');
+  const pathName = route ? route : target.parentNode.parentNode.getAttribute('data-route');
+  historyRouterPush(`#/detail/best/${pathName}`);
 };
 
 //즐겨찾기 추가 이벤트 핸들러
@@ -278,7 +276,7 @@ const pushMain = () => {
 };
 //카테고리 이동 이벤트 핸들러
 const pushCategory = ({ target }) => {
-  const pathName = target.getAttribute('route');
+  const pathName = target.getAttribute('data-route');
   historyRouterPush(`#/${pathName}`);
   window.scrollTo(0, 0);
 };

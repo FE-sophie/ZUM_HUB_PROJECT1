@@ -24,7 +24,7 @@ const Header = ({ header, path }) => {
                 ({ title, route }) =>
                   `<li class='history ${
                     title === titleList[path] && 'active'
-                  }' route=${route}>${title}</li>`,
+                  }' data-route=${route}>${title}</li>`,
               )
               .join('')}
           </ul>

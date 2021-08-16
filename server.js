@@ -56,14 +56,20 @@ app.get('/api/content/:category', (req, res) => {
 //페이지 라우팅
 app.get('/:page', (req, res) => {
   const page = req.params.page;
-  res.send(data[page]);
+  if (!data[page]) {
+    res.status(404).type('html').send(`<div class="error">
+    <span class="errorText errorText1">404</span>
+    <span class="errorText errorText2">Not Found</span>
+    <span class="errorText errorText3">The resource requested could not be found on this server</span>
+    </div>`);
+  } else {
+    res.send(data[page]);
+  }
 });
-
 //메인페이지 라우팅
 app.get('/', (req, res) => {
   res.sendFile(path.join(app.get('front'), '/public/index.html'));
 });
-
 app.listen(app.get('port'), () => {
   console.log(app.get('port'), 'is listening.....');
 });
