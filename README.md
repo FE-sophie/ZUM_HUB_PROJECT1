@@ -70,8 +70,8 @@
 
 ## 4. 컨벤션 
 
-- 네이밍규칙: Hungarian notation
-- 컴포넌트 파일 이름 : Camel case
+- 네이밍규칙: Camel case
+- 컴포넌트 파일 이름 : PascalCase
 
 
 <br>
