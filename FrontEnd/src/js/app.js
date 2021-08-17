@@ -106,7 +106,6 @@ window.addEventListener('DOMContentLoaded', () => {
   subscribe(GET_SUB_VIEW, () => appRender());
   subscribe(GET_DETAIL_VIEW, () => appRender());
   subscribe(NOT_FOUND, () => appRender());
-
   historyRouterPush(hash);
 });
 
