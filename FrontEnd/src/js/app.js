@@ -24,7 +24,7 @@ const appRender = () => {
   let state = getState();
   //뷰 조회
   let path = state.path;
-  let route = ['life', 'culture', 'trip', 'food', '#'];
+  let route = ['life', 'culture', 'trip', 'food'];
 
   let view = state.page;
 
@@ -240,7 +240,7 @@ const articleEventHandler = async ({ target }) => {
     pathName = pathName
       ? pathName.split('/')
       : target.parentNode.getAttribute('data-route').split('/');
-    historyRouterPush(`#/detail/${pathName[0]}/${pathName[1]}/${pathName[2]}`);
+    historyRouterPush(`/detail/${pathName[0]}/${pathName[1]}/${pathName[2]}`);
   }
   //즐겨찾기 버튼 클릭시 post요청
   if (target.matches('.bookmark > *')) {
@@ -256,7 +256,7 @@ const bestEventHandler = ({ target }) => {
   if (!target.matches('.bestArticle > *') && !target.matches('.bestArticle')) return;
   const route = target.parentNode.getAttribute('data-route');
   const pathName = route ? route : target.parentNode.parentNode.getAttribute('data-route');
-  historyRouterPush(`#/detail/best/${pathName}`);
+  historyRouterPush(`/detail/best/${pathName}`);
 };
 
 //즐겨찾기 추가 이벤트 핸들러
@@ -276,7 +276,7 @@ const pushMain = () => {
 //카테고리 이동 이벤트 핸들러
 const pushCategory = ({ target }) => {
   const pathName = target.getAttribute('data-route');
-  historyRouterPush(`#/${pathName}`);
+  historyRouterPush(`/${pathName}`);
   window.scrollTo(0, 0);
 };
 

@@ -1,5 +1,4 @@
-import appStore, { NOT_FOUND } from '../../store/appStore.js';
-const { dispatch } = appStore;
+import appStore from '../../store/appStore.js';
 
 const request = {
   get(url) {
@@ -25,7 +24,6 @@ export const getMainDataApi = async () => {
     return dataList;
   } catch (error) {
     console.log(`Error:${error}`);
-    dispatch({ type: NOT_FOUND });
   }
 };
 
@@ -40,7 +38,6 @@ export const getDataApi = async (pathName, pageType) => {
     return data;
   } catch (error) {
     console.log(`Error: ${error}`);
-    dispatch({ type: NOT_FOUND });
   }
 };
 
@@ -54,7 +51,6 @@ export const getBestDataApi = async () => {
     return best;
   } catch (error) {
     console.log(`Error:${error}`);
-    dispatch({ type: NOT_FOUND });
   }
 };
 export const postBookMarkApi = async ([route, id]) => {
@@ -66,7 +62,6 @@ export const postBookMarkApi = async ([route, id]) => {
     return bookmark;
   } catch (error) {
     console.log(`Error:${error}`);
-    dispatch({ type: NOT_FOUND });
   }
 };
 export const getDetailApi = async url => {
@@ -82,6 +77,5 @@ export const getDetailApi = async url => {
     return htmlData;
   } catch (error) {
     console.log(`Error:${error}`);
-    dispatch({ type: NOT_FOUND });
   }
 };

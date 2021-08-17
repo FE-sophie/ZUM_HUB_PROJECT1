@@ -3,16 +3,7 @@ const path = require('path');
 const { stringify } = require('querystring');
 const { check } = require('./checkDetail.js');
 const app = express();
-let { food, life, rank, culture, trip, bookmark, best } = require('./data.js');
-const data = {
-  food,
-  life,
-  rank,
-  culture,
-  trip,
-  best,
-  bookmark,
-};
+const data = require('./data.js');
 
 app.set('port', process.env.PORT || 3000);
 app.set('front', process.env.FRONT || path.join(__dirname, './FrontEnd'));
@@ -32,13 +23,13 @@ app.get('/api/detail/:url', async (req, res) => {
 //북마크 추가 요청
 app.post('/api/bookmark', (req, res) => {
   const { route, id } = req.body;
-  if (bookmark.find(el => +id === el.idx)) {
-    res.send(bookmark);
+  if (data.bookmark.find(el => +id === el.idx)) {
+    res.send(data.bookmark);
     return;
   }
   let newBookmark = data[route].find(el => +id === el.idx);
-  bookmark = [...bookmark, newBookmark];
-  res.send(bookmark);
+  data.bookmark = [...data.bookmark, newBookmark];
+  res.send(data.bookmark);
 });
 
 //랭킹 데이터 송신
