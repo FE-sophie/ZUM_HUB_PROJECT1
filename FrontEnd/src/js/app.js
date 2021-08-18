@@ -99,19 +99,24 @@ const appRender = () => {
   }
 };
 
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', e => {
   const hash = window.location.hash;
   subscribe(GET_LOADING, () => appRender());
   subscribe(GET_APP_VIEW, () => appRender());
   subscribe(GET_SUB_VIEW, () => appRender());
   subscribe(GET_DETAIL_VIEW, () => appRender());
   subscribe(NOT_FOUND, () => appRender());
-  historyRouterPush(hash);
+  const pathName = history.state.pathName || location.pathName;
+  historyRouterPush(pathName);
 });
 
 window.addEventListener('popstate', e => {
   //뒤로가기 앞으로가기 라우팅 변경(홈으로 이동x)
+
   const hash = window.location.hash;
+  console.log(e);
+  console.log(hash);
+  console.log('하이');
   historyRouterPush(hash);
 });
 
