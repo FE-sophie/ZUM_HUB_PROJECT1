@@ -3,25 +3,28 @@ const createStore = (initialState, reducer) => {
 
   const events = {};
 
-  //상태 변화 시 실행할 함수
+  //특정 액션발생시 실행할 함수를 구독
   const subscribe = (actionType, eCallBack) => {
     if (!events[actionType]) {
       events[actionType] = [];
     }
     events[actionType].push(eCallBack);
   };
+
+  //특정 액션 발생시 함수 실행하는 함수
   const publish = (actionType, params) => {
     if (!events[actionType]) return;
     events[actionType].map(func => func(params));
   };
 
+  //특정 액션 발생시 리듀서에 상태와 액션을 전달하여 상태업데이트
   const dispatch = (action, params) => {
     state = reducer(state, action);
     publish(action.type, params);
   };
 
-  const getState = () => state;
-
+  const getState = () => JSON.parse(JSON.stringify(state))
+  
   return {
     getState,
     subscribe,
