@@ -3,16 +3,21 @@
 # 👩‍💻 ZUM_HUB_VANILLAR JAVASCRIPT PROJECT
 
 #### 줌허브 UI를 참고하여 자바스크립트로 SPA 구현하는 프로젝트입니다. 
+<br>
+<br>
 
 ### Frontend 
 라이브러리 없이 Vanillar JavaScript로만 구현하였습니다. 
 라우팅 구현시 PJAX방식을 이용하여 페이지마다 고유한 URL을 부여하였습니다. React의 Redux패턴처럼 Store(코어)를 만들고 옵저버패턴을 사용하여 상태 업데이트 발생 시
 리렌더링이 발생하도록 구현하였습니다. 즐겨찾기 버튼 기능이 추가되었고 무한스크롤,레이지 로딩을 통해 UX 개선 및 렌더링 최적화가 요구되었습니다.
+<br>
+<br>
 
 ### Backend 
 express를 통해 서버를 만들고 제공된 JSON을 토대로 엔드포인트를 만들었습니다.
 컨텐츠에 대한 본문은 chreeio,axios 모듈을 이용해 html을 일부 스크래핑하여 본문영역에 끼워넣는 방식으로 구현하였습니다.
-
+<br>
+<br>
 
 ## 2. 기술스택
 - front-end
