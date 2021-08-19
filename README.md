@@ -1,5 +1,5 @@
 <br>
-# 👩‍💻 ZUM_HUB_VANILLAR JAVASCRIPT PROJECT
+# ZUM_HUB_VANILLAR JAVASCRIPT PROJECT
 
 #### 줌허브 UI를 참고하여 자바스크립트로 SPA 구현하는 프로젝트입니다. 
 
