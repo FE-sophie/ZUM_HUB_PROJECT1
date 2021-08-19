@@ -6,8 +6,6 @@
 <br>
 <br>
 ## 1. 프로젝트 설명
-<br>
-<br>
 ### Frontend 
 라이브러리 없이 Vanillar JavaScript로만 구현하였습니다. 
 라우팅 구현시 PJAX방식을 이용하여 페이지마다 고유한 URL을 부여하였습니다. React의 Redux패턴처럼 Store(코어)를 만들고 옵저버패턴을 사용하여 상태 업데이트 발생 시
