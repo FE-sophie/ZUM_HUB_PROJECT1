@@ -1,6 +1,5 @@
 const express = require('express');
 const path = require('path');
-const { stringify } = require('querystring');
 const { check } = require('./checkDetail.js');
 const app = express();
 const data = require('./data.js');
@@ -10,7 +9,17 @@ app.set('front', process.env.FRONT || path.join(__dirname, './FrontEnd'));
 
 app.use('/', express.static(path.join(app.get('front'), '/')));
 app.use('/public', express.static(path.join(app.get('front'), '/public')));
+
 app.use(express.json());
+
+//기사 본문페이지(상세페이지)에서 새로고침시 index
+app.get('/detail/:media/:page/:idx', (req, res) => {
+  res.format({
+    'text/html': () => {
+      res.sendFile(path.join(app.get('front'), '/public/index.html'));
+    },
+  });
+});
 
 //디테일페이지 데이터 송신
 app.get('/api/detail/:url', async (req, res) => {
@@ -47,7 +56,6 @@ app.get('/api/content/:category', (req, res) => {
 //페이지 라우팅
 app.get('/:page', (req, res) => {
   const page = req.params.page;
-  console.log(page);
   res.format({
     'text/html': () => {
       if (!data[page]) {
