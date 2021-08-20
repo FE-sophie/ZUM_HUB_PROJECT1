@@ -1,3 +1,5 @@
+import '@babel/polyfill';
+
 import SubPage from '../components/SubPage.js';
 import Main from '../components/Main.js';
 import Header from '../components/Header.js';
