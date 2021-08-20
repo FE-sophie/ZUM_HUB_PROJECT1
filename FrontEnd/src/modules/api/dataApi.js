@@ -1,5 +1,3 @@
-import appStore from '../../store/appStore.js';
-
 const request = {
   get(url) {
     return fetch(url);
