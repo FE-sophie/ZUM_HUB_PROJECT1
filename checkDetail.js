@@ -9,10 +9,8 @@ const getHTML = async url => {
     console.log(error);
   }
 };
-
 const check = async url => {
   return getHTML(url).then(({ data }) => {
-    // const $ = cheerio.load(data, { decodeEntities: true });
     //html 본문 추출
     const category = {
       라이프: 'life',
