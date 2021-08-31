@@ -8,7 +8,7 @@ const Articles = (sectionTitle, dataList, sectionName) => {
             return `
             <li class="articleItem" data-route='${sectionName}/${url}'>
               <article id="${sectionName}ID${idx}" class="articleCard">
-                <img class="articleImg"src="${imageUrl}" alt="${title}"/>
+                <img class="articleImg" src="${imageUrl}" alt="${title}"/>
                 <h3 class="articleTitle">${title}</h3>
                 <p>${summaryContent}</p>
                 <span>by ${mediaName}</span>

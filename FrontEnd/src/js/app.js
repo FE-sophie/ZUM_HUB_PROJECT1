@@ -1,4 +1,6 @@
-import '@babel/polyfill';
+// import '@babel/polyfill';
+// import '../assets/style.css';
+// import '../assets/img/loading.gif';
 
 import SubPage from '../components/SubPage.js';
 import Main from '../components/Main.js';

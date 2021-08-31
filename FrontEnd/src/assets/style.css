@@ -108,12 +108,12 @@ html {
   background-position: center;
 }
 .header .zLogo::before {
-  background-image: url(../../public/logo.png);
+  background-image: url('./img/logo.png');
 }
 .header .logo .hLogo::before {
   width: 40px;
   left: 70px;
-  background-image: url('../../public/hub.png');
+  background-image: url('./img/hub.png');
 }
 
 .header nav {
