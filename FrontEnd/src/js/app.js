@@ -28,13 +28,13 @@ const appRender = () => {
   let state = getState();
   //뷰 조회
   let path = state.path;
-  let route = ['life', 'culture', 'trip', 'food'];
+  let route = ['life', 'culture', 'trip', 'food', 'home'];
 
   let view = state.page;
 
   const $app = document.querySelector('#app');
 
-  if (!route.includes(path) || state.page === 'error') {
+  if (!route.includes(path) || view === 'error') {
     const $loading = document.querySelector('.loading');
     if ($loading) {
       setTimeout(() => {
@@ -137,7 +137,6 @@ const infinityScrollHandler = () => {
         count: count + 1,
       },
     });
-    console.log(getState().sub.count);
   }
 };
 
