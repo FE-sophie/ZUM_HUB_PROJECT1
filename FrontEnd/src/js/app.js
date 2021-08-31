@@ -37,6 +37,7 @@ const appRender = () => {
   if (!route.includes(path) || view === 'error') {
     const $loading = document.querySelector('.loading');
     if ($loading) {
+      console.log('ㅇㅙ 에러냐');
       setTimeout(() => {
         $loading.remove();
         $app.innerHTML = Header(state) + Error(state);
