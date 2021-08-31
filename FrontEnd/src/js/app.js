@@ -28,15 +28,17 @@ const appRender = () => {
   let state = getState();
   //뷰 조회
   let path = state.path;
-  let route = ['life', 'culture', 'trip', 'food'];
+  console.log(path);
+  let route = ['life', 'culture', 'trip', 'food', 'home'];
 
   let view = state.page;
 
   const $app = document.querySelector('#app');
 
-  if (!route.includes(path) || state.page === 'error') {
+  if (!route.includes(path) || view === 'error') {
     const $loading = document.querySelector('.loading');
     if ($loading) {
+      console.log('ㅇㅙ 에러냐');
       setTimeout(() => {
         $loading.remove();
         $app.innerHTML = Header(state) + Error(state);
