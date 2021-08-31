@@ -34,6 +34,9 @@ express를 통해 서버를 만들고 제공된 JSON을 토대로 엔드포인�
 <br>
 
 ## 3. 기능적 요구사항
+<details>
+<summary>필수 구현 내용</summary>
+<div markdown="1">       
 
 ### (1) 메뉴
 
@@ -69,6 +72,9 @@ express를 통해 서버를 만들고 제공된 JSON을 토대로 엔드포인�
 
 - 즐겨찾기로 지정된 컨텐츠가 보여진다.
 - 제일 최근에 즐겨찾기한 순서대로 보여져야 한다.
+</div>
+</details>
+
 <br>
 <br>
 <br>
