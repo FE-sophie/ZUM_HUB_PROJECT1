@@ -103,22 +103,6 @@ const appRender = () => {
   }
 };
 
-window.addEventListener('DOMContentLoaded', e => {
-  subscribe(GET_APP_VIEW, () => appRender());
-  subscribe(GET_LOADING, () => appRender());
-  subscribe(GET_SUB_VIEW, () => appRender());
-  subscribe(GET_DETAIL_VIEW, () => appRender());
-  subscribe(NOT_FOUND, () => appRender());
-  const pathName = history.state ? history.state.pathName : '/' || location.pathname;
-  historyRouterPush(pathName);
-});
-
-window.addEventListener('popstate', e => {
-  //뒤로가기 앞으로가기 라우팅 변경(홈으로 이동x)
-  const pathName = history.state ? history.state.pathName : '/' || location.pathname;
-  historyRouterPush(pathName);
-});
-
 const throttle = (callBack, delay) => {
   let timerId;
   return e => {
@@ -136,8 +120,8 @@ const throttle = (callBack, delay) => {
 
 //무한스크롤 이벤트 핸들러
 const infinityScrollHandler = () => {
-  const hash = window.location.hash;
-  const path = hash.replace('#/', '');
+  const { pathname } = window.location;
+  const path = pathname.replace('/', '');
   //서브페이지에서만 인피니트 스크롤 구현
   let route = ['life', 'culture', 'trip', 'food', 'bookmark'];
   if (!route.includes(path)) return;
@@ -153,10 +137,9 @@ const infinityScrollHandler = () => {
         count: count + 1,
       },
     });
+    console.log(getState().sub.count);
   }
 };
-//무한 스크롤 이벤트 핸들러 등록
-window.addEventListener('scroll', throttle(infinityScrollHandler, 1000));
 
 //네비게이션 이벤트 등록
 const headerEvent = () => {
@@ -283,5 +266,23 @@ const pushCategory = ({ target }) => {
   historyRouterPush(`/${pathName}`);
   window.scrollTo(0, 0);
 };
+
+window.addEventListener('DOMContentLoaded', e => {
+  subscribe(GET_APP_VIEW, () => appRender());
+  subscribe(GET_LOADING, () => appRender());
+  subscribe(GET_SUB_VIEW, () => appRender());
+  subscribe(GET_DETAIL_VIEW, () => appRender());
+  subscribe(NOT_FOUND, () => appRender());
+  const pathName = history.state ? history.state.pathName : '/' || location.pathname;
+  historyRouterPush(pathName);
+});
+
+window.addEventListener('popstate', e => {
+  //뒤로가기 앞으로가기 라우팅 변경(홈으로 이동x)
+  const pathName = history.state ? history.state.pathName : '/' || location.pathname;
+  historyRouterPush(pathName);
+});
+//무한 스크롤 이벤트 핸들러 등록
+window.addEventListener('scroll', throttle(infinityScrollHandler, 1000));
 
 export default appRender;
