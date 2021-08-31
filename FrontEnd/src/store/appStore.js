@@ -42,7 +42,6 @@ const reducer = (state, { type, payload }) => {
     }
     case GET_SUB_VIEW: {
       const { page, path, count, data } = payload;
-
       if (path !== 'bookmark') {
         const subArr = [...state.sub[path], ...data];
         if (subArr.length > 40) subArr.length = 40;
@@ -56,7 +55,7 @@ const reducer = (state, { type, payload }) => {
       } else {
         return {
           ...state,
-          sub: { ...state.sub, [path]: data, count },
+          sub: { life: [], food: [], trip: [], culture: [], bookmark: data, count: 0 },
           error: false,
           path,
           page,
